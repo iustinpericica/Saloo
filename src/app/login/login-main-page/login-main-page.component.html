@@ -1,0 +1,55 @@
+<ion-fab vertical="top" horizontal="start" slot="fixed">
+    <ion-fab-button (click) = "backClicked()">
+        <ion-icon name="close"></ion-icon>
+    </ion-fab-button>
+</ion-fab>
+
+
+<ion-content>
+  <div id = "wrapperTitle">
+    <p id="title">Saloo</p>
+  </div>
+
+  <ion-list>
+
+      <ion-item>
+          <ion-button expand = "full" shape="round">
+            <ion-icon name="logo-google" slot="start"></ion-icon>
+            <ion-label>Continuati cu Google</ion-label>
+          </ion-button>      
+      </ion-item>
+      <ion-item>
+          <ion-button expand = "full" shape="round">
+              <ion-icon name="logo-facebook" slot="start"></ion-icon>
+              <ion-label>Continuati cu Facebook</ion-label>
+          </ion-button>  
+      </ion-item>
+      <ion-item>
+          <ion-button expand = "full" shape="round">
+              <ion-icon name="mail" slot = "start"></ion-icon>              
+              <ion-label>Autentificati-va cu adresa de e-mail</ion-label>
+          </ion-button> 
+      </ion-item>
+
+      <ion-item>
+        <p id="or"><span>Sau</span></p>
+      </ion-item>
+
+      <ion-item>
+          <ion-button expand = "full" fill="outline" shape="round" (click) = "createAnAccount()">
+              <ion-icon name="person-add" slot = "start"></ion-icon>              
+              <ion-label>Creati un cont</ion-label>
+          </ion-button> 
+      </ion-item>
+      
+    </ion-list>
+
+</ion-content>
+
+<ion-footer>
+    
+  <p>Creand sau autentificandu-va intr-un cont, sunteti de acord cu <a>Termenii si Conditiitle</a>
+  si cu <a>Declaratia de Confidentialitate</a>
+  </p>
+    
+</ion-footer>

@@ -1,0 +1,27 @@
+<ion-fab vertical="top" horizontal="start" slot="fixed">
+  <ion-fab-button (click) = "backClicked()">
+      <ion-icon name="arrow-round-back"></ion-icon>
+  </ion-fab-button>
+</ion-fab>
+
+<ion-content>
+  <div>
+    <h1><b>Creaţi un cont</b></h1>
+    <form>
+      <ion-item>
+        <ion-label position="floating">Adresă de e-mail</ion-label>
+        <ion-input type = "text"></ion-input>
+      </ion-item>
+
+
+      <ion-item id="passwordWrapper">
+        <ion-label position="floating">Parolă</ion-label>
+        <ion-input [type] = "eyeType == 'eye' ? 'text' : 'password'" name = "password" id="password"></ion-input>
+        <ion-icon [name]="eyeType" slot = "end" (click) = "changeEye()"></ion-icon>
+      </ion-item>
+
+      <ion-button expand="block">Creaţi cont</ion-button>
+
+    </form>
+  </div>
+</ion-content>
