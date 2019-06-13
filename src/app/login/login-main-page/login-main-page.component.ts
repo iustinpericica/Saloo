@@ -17,6 +17,10 @@ export class LoginMainPageComponent implements OnInit {
     this._location.back();
   }
 
+  loginAccount():void{
+    this.router.navigate(['/login/login-account'])
+  }
+
   createAnAccount(){
     this.router.navigate(['/login/create-account']);
   }
