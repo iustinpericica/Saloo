@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {Location} from '@angular/common';
 import { Router } from '@angular/router';
+import { SignInService } from './signIn.service';
 
 @Component({
   selector: 'app-login-main-page',
@@ -9,7 +10,7 @@ import { Router } from '@angular/router';
 })
 export class LoginMainPageComponent implements OnInit {
 
-  constructor(private _location: Location, private router: Router) { }
+  constructor(private _location: Location, private router: Router, private signInService: SignInService) { }
 
   ngOnInit() {}
 
@@ -23,6 +24,14 @@ export class LoginMainPageComponent implements OnInit {
 
   createAnAccount(){
     this.router.navigate(['/login/create-account']);
+  }
+
+  public signInWithGoogle():void{
+    this.signInService.signInWithGoogle();
+  }
+
+  public signInWithFacebook():void{
+    this.signInService.signInWithFacebook();
   }
 
 }

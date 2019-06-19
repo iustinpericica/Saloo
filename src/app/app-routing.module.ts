@@ -18,6 +18,10 @@ const routes: Routes = [
   {
     path:'login',
     loadChildren:'./login/login.module#UserLoginModule'
+  },
+  {
+    path:'my-account',
+    loadChildren:'./my-account/my-account.module#MyAccountModule'
   }
 ];
 

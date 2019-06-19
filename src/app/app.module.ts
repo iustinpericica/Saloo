@@ -12,6 +12,16 @@ import { AppRoutingModule } from './app-routing.module';
 import { AngularFireModule } from '@angular/fire';
 import { environment } from '../environments/environment';
 
+//ngRx
+
+import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { EffectsModule } from '@ngrx/effects';
+import { reducer } from './state/app.reducer';
+import { AngularFireAuthModule } from '@angular/fire/auth';
+import { NgCircleProgressModule } from 'ng-circle-progress';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
@@ -19,7 +29,16 @@ import { environment } from '../environments/environment';
     BrowserModule,
     IonicModule.forRoot(),
     AppRoutingModule,
-    AngularFireModule.initializeApp(environment.firebase)
+    AngularFireAuthModule,
+    AngularFireModule.initializeApp(environment.firebase, 'Saloo'),
+    StoreModule.forRoot([reducer]),
+    StoreDevtoolsModule.instrument({
+      name: 'APM Demo App DevTools',
+      maxAge: 25,
+      logOnly: environment.production,
+    }),
+    NgCircleProgressModule.forRoot({}),
+    AngularFirestoreModule
   ],
   providers: [
     StatusBar,

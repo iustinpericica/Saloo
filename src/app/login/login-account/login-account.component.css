@@ -1,0 +1,75 @@
+ion-fab {
+  margin-top: 30px;
+}
+
+#wrapper {
+  background-image: url("/assets/pictures/girlAtSaloon.jpg") !important;
+  background-size: cover;
+}
+
+ion-content {
+  --background:transparent;
+  background-color: transparent;
+  background-size: cover;
+}
+
+ion-content div {
+  margin-top: 30%;
+  background-color: white;
+  height: auto;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-bottom: 5%;
+  padding-top: 5%;
+  border-radius: 5px;
+}
+
+ion-content div h1 {
+  margin-left: 5%;
+  margin-bottom: 0;
+  padding-bottom: 10px;
+}
+
+ion-content div #info {
+  margin-top: 0;
+  padding-top: 10px;
+  margin-left: 5%;
+}
+
+ion-content div #passwordForgot {
+  text-align: center;
+  width: 100%;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -ms-flex-line-pack: center;
+      align-content: center;
+  vertical-align: middle;
+}
+
+ion-content div #passwordForgot a {
+  margin: auto;
+  text-align: center;
+  width: 100%;
+  cursor: pointer;
+}
+
+ion-content div ion-label {
+  margin: 0;
+}
+
+ion-content div form {
+  letter-spacing: 1px;
+  background-color: 0;
+  background-color: transparent;
+  margin-left: 5%;
+  margin-right: 5%;
+}
+
+ion-content div form #passwordWrapper ion-icon {
+  cursor: pointer;
+  vertical-align: center;
+  padding-top: 5px;
+}
+/*# sourceMappingURL=login-account.component.css.map */

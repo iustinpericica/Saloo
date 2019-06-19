@@ -1,0 +1,30 @@
+.title{
+    font-size:15px;
+}
+
+ion-card-content{
+    img{
+        width:100%;
+        height: auto;
+        margin:0;
+        padding:0;
+        border-radius:6px;
+    }
+
+    ion-card-title{
+        margin:0;
+        padding:0
+    }
+
+    p{
+        margin:0;
+        padding:0;
+    }
+
+    ion-button{
+        .comment{
+            width:92%;
+            margin: auto;
+        }
+    }
+}

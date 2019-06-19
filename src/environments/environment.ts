@@ -4,12 +4,13 @@
 export const environment = {
   production: false,
   firebase: {
-    apiKey: '<your-key>',
-    authDomain: '<your-project-authdomain>',
-    databaseURL: '<your-database-URL>',
-    projectId: '<your-project-id>',
-    storageBucket: '<your-storage-bucket>',
-    messagingSenderId: '<your-messaging-sender-id>'
+    apiKey: "AIzaSyC6RRJ101LFFnUtzvp0PNWBXzErXofEO-Y",
+    authDomain: "saloo-33074.firebaseapp.com",
+    databaseURL: "https://saloo-33074.firebaseio.com",
+    projectId: "saloo-33074",
+    storageBucket: "saloo-33074.appspot.com",
+    messagingSenderId: "37110219035",
+    appId: "1:37110219035:web:e851397e5c36883c"
   }
 };
 /*

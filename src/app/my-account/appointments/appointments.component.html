@@ -1,0 +1,61 @@
+<ion-header>
+  <ion-toolbar>
+      <ion-buttons slot="start">
+          <ion-button shape="round" (click) = "backClicked()"><ion-icon name="arrow-round-back" size = "large"></ion-icon></ion-button>
+      </ion-buttons>
+      <ion-title>Rezervări</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <!-- Segment with secondary color -->
+  <ion-segment (ionChange)="segmentChanged($event)" color="secondary" value = "standard">
+    <ion-segment-button value="standard">
+      <ion-label>TRECUTE</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="hybrid">
+      <ion-label>ÎN CURS</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="sat">
+      <ion-label>VIITOARE</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  
+<ion-card>
+  <!-- <ion-item lines = "none">
+    <ion-label class = "title">ion-item in a card, icon left, button right</ion-label>
+  
+  </ion-item> -->
+  <ion-card-header>
+      <ion-item lines = "none">
+
+        <div>
+
+          <p><ion-card-title>Card Title</ion-card-title></p>
+          <p><ion-card-subtitle>Card Subtitle</ion-card-subtitle></p>
+
+        </div>
+
+          <ion-icon name="trash" slot="end"></ion-icon> 
+      </ion-item>
+
+  </ion-card-header>
+
+  <ion-card-content>
+    <img src = "/assets/pictures/hotel.jpg" />
+  </ion-card-content>
+  <ion-button expand="block" class = "comment" fill="outline">Vedeţi comentariul</ion-button>
+
+  <ion-item>
+    <ion-label>Data: 23/53/1032, Ora: 13:54</ion-label>
+    <ion-label slot = "end">RON 173,43</ion-label>
+  </ion-item>
+  <ion-button expand="block" class = "comment" fill="outline">Rezervaţi din nou</ion-button>
+</ion-card>
+
+</ion-content>
+
+
+

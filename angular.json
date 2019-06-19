@@ -40,9 +40,16 @@
               },
               {
                 "input": "src/app/app.scss"
+              },
+              {
+                "input": "node_modules/toastr/toastr.scss"
               }
             ],
-            "scripts": [],
+            "scripts": [
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/toastr/build/toastr.min.js"
+
+            ],
             "es5BrowserSupport": true
           },
           "configurations": {

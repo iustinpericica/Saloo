@@ -1,0 +1,29 @@
+ion-content {
+  background-color: rgba(255, 255, 255, 0.719);
+  --background:rgba(255, 255, 255, 0.719);
+}
+
+ion-content #wrapperPicture {
+  height: 25%;
+  width: 100%;
+  white-space: nowrap;
+  text-align: center;
+  margin: 1em 0;
+}
+
+ion-content #wrapperPicture .helper {
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+}
+
+ion-content #wrapperPicture ion-icon {
+  vertical-align: middle;
+  font-size: 70px;
+  margin-bottom: 15%;
+}
+
+ion-content #circleProgress {
+  width: 100%;
+}
+/*# sourceMappingURL=main-interface-account.component.css.map */

@@ -1,0 +1,22 @@
+ion-content{
+    background-color:rgba(255, 255, 255, 0.719);
+    --background:rgba(255, 255, 255, 0.719);
+
+    .box{
+        background-color:white;
+        width:96%;
+        margin:auto;
+        border-radius:8px;
+        padding:20px;
+        margin-top:10px;
+    }
+
+    #birthdayInfo{
+        font-size:13px;
+    }
+}
+
+#confirmed{
+    margin-top:0;
+    font-size:14px;
+}

@@ -1,0 +1,112 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-button shape="round" (click) = "backClicked()"><ion-icon name="arrow-round-back" size = "large"></ion-icon></ion-button>
+        </ion-buttons>
+        <ion-title>Dashboard</ion-title>
+        <ion-button *ngIf = "showSave" fill = "clear" color = "primary" (click) = "save()" slot = "end">SALVEAZĂ</ion-button>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class = "box">
+    <h4>Detalii publice</h4>
+
+    <ion-item>
+        <ion-icon name="contact" slot = "start" id = "contact" size = "large"></ion-icon>
+        <ion-label position="floating">Nume de utilizator</ion-label>
+        <ion-input [(ngModel)] = "formControls.displayName" (change) = "changeDetect(displayName.value, 'displayName')" #displayName></ion-input>
+    </ion-item>
+    <p id = "birthdayInfo">Vă vom afişa grupa de vârstă in dreptul comentariilor dumneavoastră</p>
+
+    <ion-item>
+        <ion-label>Data naşterii: </ion-label>
+        <ion-datetime [(ngModel)] = "formControls.birthday" (ionChange) = "changeDetect(birthday.value, 'birthday')" #birthday display-format="MMM DD, YYYY"></ion-datetime>
+        <ion-icon name="arrow-dropdown" slot = "end"></ion-icon>
+    </ion-item>
+
+    <ion-item>
+        <ion-label position="floating">Locaţie</ion-label>
+        <ion-select [(ngModel)] = "formControls.location" (ionChange) = "changeDetect(location.value, 'location')" #location cancelText="Cancel" okText="OK">
+          <ion-select-option *ngFor="let item of countries" [value]="item">{{item}}</ion-select-option>
+        </ion-select>
+    </ion-item>
+
+
+  </div>
+
+
+  <div class = "box">
+
+    <h4>Informaţii personale</h4>
+
+    <ion-item>
+        <ion-label position="floating">Titlu</ion-label>
+        <ion-select [(ngModel)] = "formControls.title" (ionChange) = "changeDetect(title.value, 'title')" #title cancelText="Cancel" okText="OK" >
+          <ion-select-option *ngFor="let title of ['Dl', 'Dn', 'Dna']" [value]="item">{{title}}</ion-select-option>
+        </ion-select>
+    </ion-item>
+
+    <ion-item>
+        <ion-label position="floating">Prenume</ion-label>
+        <ion-input [(ngModel)] = "formControls.firstName" (ionChange) = "changeDetect(firstName.value, 'firstName')" #firstName  type = "text"></ion-input>
+    </ion-item>
+
+    <ion-item>
+        <ion-label position="floating">Nume</ion-label>
+        <ion-input [(ngModel)] = "formControls.lastName" (ionChange) = "changeDetect(lastName.value, 'lastName')" #lastName></ion-input>
+    </ion-item>
+
+    <ion-item>
+        <ion-label position="floating">Sex</ion-label>
+        <ion-select [(ngModel)] = "formControls.sex"  (ionChange) = "changeDetect(sex.value, 'sex')" #sex cancelText="Cancel" okText="OK">
+          <ion-select-option *ngFor="let sex of ['Bărbat', 'Femeie']" [value]="item">{{sex}}</ion-select-option>
+        </ion-select>
+    </ion-item>
+  
+    <ion-item>
+        <ion-label position="floating">Număr de telefon</ion-label>
+        <ion-input [(ngModel)] = "formControls.phoneNumber" (ionChange) = "changeDetect(phoneNumber.value, 'phoneNumber')" #phoneNumber name = "phoneNumber" [(ngModel)] = "formControls.phoneNumber" ></ion-input>
+    </ion-item>
+
+    <ion-item>
+            <ion-label position="floating">Adresă</ion-label>
+            <ion-input [(ngModel)] = "formControls.address" (ionChange) = "changeDetect(address.value, 'address')" #address name = "address" [(ngModel)] = "formControls.address" ></ion-input>
+    </ion-item>
+
+
+    <ion-item>
+            <ion-label position="floating">Oraş</ion-label>
+            <ion-input name = "city" [(ngModel)] = "formControls.city"  (ionChange) = "changeDetect(city.value, 'city')" #city></ion-input>
+    </ion-item>
+
+    <ion-item>
+            <ion-label position="floating">Ţară/regiunea</ion-label>
+            <ion-input name = "country" [(ngModel)] = "formControls.country" (ionChange) = "changeDetect(country.value, 'country')" #country></ion-input>
+    </ion-item>
+
+    <ion-item>
+            <ion-label position="floating">Cod poştal</ion-label>
+            <ion-input [(ngModel)] = "formControls.postalCode" (ionChange) = "changeDetect(postalCode.value, 'postalCode')" #postalCode></ion-input>
+    </ion-item>  
+
+   </div>
+
+   <div class="box">
+        <h4>Adrese de e-mail</h4>
+        <ion-item lines = "none" *ngIf = "formControls.email">
+            <ion-icon name="checkmark-circle-outline" *ngIf = "formControls.emailVerified" slot = "start" color = "success"></ion-icon>
+            <ion-icon name="close-circle" *ngIf = "!formControls.emailVerified" slot = "start" color = "danger"></ion-icon>
+            <div>
+                <p>{{formControls.email}}</p>
+                <p id="confirmed" *ngIf = "formControls.emailVerified">E-mail confirmat</p>
+                <p id="confirmed" *ngIf = "!formControls.emailVerified">E-mail neconfirmat</p>
+                <ion-button (click) = "verifyEmail()" *ngIf = "!formControls.emailVerified">Verifică e-mailul</ion-button>
+            </div>
+        </ion-item>
+        <ion-button fill = "clear">EDITAŢI-VĂ EMAILUL</ion-button>
+    </div>
+
+
+
+</ion-content>

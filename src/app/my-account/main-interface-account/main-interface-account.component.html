@@ -1,0 +1,116 @@
+<ion-header>
+  <ion-toolbar>
+      <ion-buttons slot="start">
+          <ion-button shape="round" (click) = "backClicked()"><ion-icon name="arrow-round-back" size = "large"></ion-icon></ion-button>
+      </ion-buttons>
+      <ion-title>Dashboard</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <div id = "wrapperPicture">
+      <span class="helper"></span>
+      <ion-icon name="contact"></ion-icon>
+  </div>
+
+  <ion-item (click)="goPersonalDetails()" button = "true" lines = "full">
+      <ion-icon slot="start" name="create"></ion-icon>
+      <ion-label>
+        Editaţi-vă profilul
+      </ion-label>
+      <ion-icon slot="end" name="arrow-dropright"></ion-icon>
+  </ion-item>
+
+  <div  id = "progress">
+
+    <ion-item id = "firstPart" lines = "full">
+
+      <ion-item class = "circleWrapper" slot = "start" lines = "none">
+        <circle-progress
+        id = "circleProgress"
+        [percent]="percent"
+        [maxPercent] = "100"
+        [radius]="100"
+        [outerStrokeWidth]="32"
+        [outerStrokeColor]="'#78C000'"
+        [titleFontSize]= "70"
+        [animation]="true"
+        [showSubtitle]= "false"
+        [animationDuration]="700"
+        [responsive] = "true"
+        [lazy] = "false"
+        [showUnits] = "false"
+      ></circle-progress>
+    </ion-item>
+
+    <ion-item id = "infoProfil" lines = "none">
+        <ion-grid>
+          <ion-col size = "12">
+              <p><b>Profilul&nbsp;dumneavoastră</b></p>
+          </ion-col>
+          <ion-col size = "12">
+              <p>Finalizat: {{percent}}</p>
+          </ion-col>
+        </ion-grid>
+    </ion-item>
+
+    </ion-item>
+
+    <ion-item (click)="goPersonalDetails()" button = "true" lines = "none" id = "moreInfo" *ngIf = "percent < 100 && idCurrentQuestion !== null && percent">
+        <ion-item class = "circleWrapper" slot = "start" lines = "none">
+        <img src = "/assets/contact.svg" />
+       </ion-item>
+   
+
+        <div>
+          <p id = "firstInfo">
+              {{orderToComplete[idCurrentQuestion]?.description}}
+          </p>
+          <p>
+            {{orderToComplete[idCurrentQuestion]?.question}}
+          </p>
+        </div>
+
+        <ion-icon slot="end" name="arrow-dropright"></ion-icon>
+    </ion-item>
+
+  </div>
+
+  <ion-item (click)="goAppointments()" button = "true" lines = "full">
+      <ion-icon slot="start" name="star-outline"></ion-icon>
+      <ion-label>
+        Rezervări
+      </ion-label>
+      <ion-badge color="primary" slot = "end">16</ion-badge>
+      <ion-icon slot="end" name="arrow-dropright"></ion-icon>
+  </ion-item>
+
+  <ion-item (click)="testClick()" button = "true" lines = "full">
+      <ion-icon slot="start" name="happy"></ion-icon>
+      <ion-label>
+        Evaluări
+      </ion-label>
+      <ion-badge color="warning" slot = "end">69</ion-badge>
+      <ion-icon slot="end" name="arrow-dropright"></ion-icon>
+  </ion-item>
+
+  <ion-item (click)="testClick()" button = "true" lines = "full">
+      <ion-icon slot="start" name="heart"></ion-icon>
+      <ion-label>
+        Saloane preferate
+      </ion-label>
+      <ion-badge color="danger" slot = "end">66</ion-badge>
+      <ion-icon slot="end" name="arrow-dropright"></ion-icon>
+  </ion-item>
+
+
+  <p id = "disconnect">
+    <b><ion-button fill = "clear" color = "danger" (click) = "logout()">Deconectare</ion-button></b>
+  </p>
+
+</ion-content>
+
+
+
+

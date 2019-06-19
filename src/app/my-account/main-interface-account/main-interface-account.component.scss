@@ -1,0 +1,136 @@
+
+ion-content{
+
+    background-color:rgba(255, 255, 255, 0.719);
+    --background:rgba(255, 255, 255, 0.719);
+
+    #wrapperPicture{        
+
+        height:25%;
+        width:100%;
+        white-space: nowrap;
+        text-align: center; margin: 1em 0;
+
+        .helper {
+            display: inline-block;
+            height: 100%;
+            vertical-align: middle;
+        }
+
+
+        ion-icon {
+            vertical-align: middle;
+            font-size: 70px;
+            margin-bottom:15%;
+        }
+        }
+
+        .circleWrapper{
+            width:25%;
+            margin-left:0;
+            padding-left:0;
+            --padding-start:0;
+            --inner-padding-end:0;
+        }
+
+
+
+
+}
+
+ion-item{
+    display:block;
+}
+
+ion-grid{
+    padding:0;
+    margin:0;
+    ion-col{
+        padding:0;
+        margin:0;
+        width:100%;
+    }
+}
+
+#progress{
+    width:96%;
+    margin:auto;
+    border-radius: 7px;
+    margin-top:5%;
+    margin-bottom:5%;
+    background-color: white;
+
+    p{
+        width:100%;
+        margin:0;
+        font-size: 20px;
+        
+    }
+
+}
+
+#circleProgress{
+    margin-left:0;
+    padding-left:0;
+    
+}
+
+#moreInfo{
+    padding-bottom:15px;
+}
+
+#firstPart{
+    padding-top:15px;
+    padding-left:0;
+    --padding-start:0;
+    --inner-padding-end:0;
+}
+
+#firstInfo{
+    color: var(--ion-color-primary);
+
+}
+
+#disconnect{
+    width:100%;
+    text-align:center;
+    b{
+        margin:auto;
+
+    }
+}
+
+#infoProfil{
+    --padding-start:0 !important;
+    --inner-padding-end:0 !important;
+    padding-left:0 !important;
+    padding-right:0 !important;
+
+    ion-grid{
+        --padding-start:0 !important;
+        --inner-padding-end:0 !important;
+        padding-left:0 !important;
+        padding-right:0 !important;
+
+        ion-col{
+            --padding-start:0 !important;
+            --inner-padding-end:0 !important;
+            padding-left:0 !important;
+            padding-right:0 !important;
+        }
+    }
+    
+}
+
+#moreInfo{
+    --padding-start:0 !important;
+    --inner-padding-end:0 !important;
+    padding-left:0 !important;
+    padding-right:0 !important;
+    font-size:12px;
+    img{
+        padding-left:0;
+        margin-left:0;
+        border-radius:10px;
+    }
+}
