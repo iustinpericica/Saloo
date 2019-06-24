@@ -18,6 +18,16 @@ export interface User{
     emailVerified?:boolean;
 }
 
+export interface UserCreateAccount{
+    displayName:string;
+    firstName:string;
+    lastName:string;
+}
+
+export interface UserLoginAccount{
+    email:string;
+}
+
 export class UserClass{
     uid?:string = null;
     firstName?:string= null;

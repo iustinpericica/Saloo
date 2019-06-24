@@ -1,27 +1,25 @@
 
 import {Action, State} from '@ngrx/store';
 import { User } from '../login/models/user';
-
+import {createAction, props} from '@ngrx/store';
 
 export enum StateTypes{
-    LogIn = "[STATE] Log in",
-    LogOut = "[STATE] Log Out",
-    SetUserData = "[USER] Set User Data"
+    LogIn = "[ROOT] Log in",
+    LogOut = "[ROOT] Log Out",
+    networkConnect = "[ROOT] Network connect",
+    networkDisconnect = "[ROOT] Network disconnect",
+    watchNetworkConnection = "[ROOT] Watch network connection"
 }
 
-export class LogOut implements Action{
-    readonly type = StateTypes.LogOut;
-}
 
-export class LogIn implements Action{
-    readonly type = StateTypes.LogIn;
-}
+export const loginAction = createAction(StateTypes.LogIn, props<{user: User}>());
 
-export class SetUserData implements Action{
-    readonly type = StateTypes.SetUserData;
-    constructor(public payload:User){}
-}
+export const logoutAction = createAction(StateTypes.LogIn, props<{}>());
 
-export type StateActions = LogOut|
-LogIn|
-SetUserData;
+export const networkConnect = createAction(StateTypes.networkConnect);
+
+export const networkDisconnect = createAction(StateTypes.networkDisconnect);
+
+export const watchNetworkConnection = createAction(StateTypes.watchNetworkConnection);
+
+// Designed By Iustin Pericica

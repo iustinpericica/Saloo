@@ -1,32 +1,17 @@
-import { User } from '../models/user';
-import { UserActionTypes, UserActions } from './user.actions';
+import * as actions from './user.actions';
+import {LoginState} from './index';
+import { createReducer, on} from '@ngrx/store';
 
-export interface UserState{
-    user:User;
+const initialState: LoginState = {
+    createAccountInformation:null,
+    loginAccountInformation:null
 }
 
-const initialState: UserState = {
-    user:null
-}
 
-export function reducer(state = initialState, action: UserActions){
-    switch(action.type){
+export const loginReducer = createReducer(
+    initialState,
+    on(actions.loginAccountInformationAction , (state, {info}) => ({...state, loginAccountInformation: info})),
+    on(actions.createAccountInformationAction , (state, {info}) => ({...state, createAccountInformation: info}))
+)
 
-        case UserActionTypes.LogOut:
-            return {
-                ...state,
-                isLoggedIn:false,
-                user:null
-            }
-
-        case UserActionTypes.LogIn:
-            return {
-                ...state,
-                isLoggedIn:true,
-                user: action.payload
-            }
-
-        default:
-            return state;
-    }
-}
+// Designed by I.P

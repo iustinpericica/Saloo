@@ -1,8 +1,6 @@
 import * as fromRoot from '../../state/index';
 
-export interface State extends fromRoot.State{
-
-
+export interface State extends fromRoot.AppState{
 
 }
 

@@ -3,13 +3,16 @@ import { Component, OnInit } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import * as fromState from './state/index'
 import * as stateActions from './state/app.actions';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
 import {AngularFirestoreModule} from '@angular/fire/firestore';
 import { User, UserClass } from './login/models/user';
+import { Network } from '@ionic-native/network/ngx';
+import { ToastController } from '@ionic/angular';
+import { pages } from './shared/pages';
 
 @Component({
   selector: 'app-root',
@@ -17,7 +20,12 @@ import { User, UserClass } from './login/models/user';
 })
 export class AppComponent implements OnInit{
 
+  public disconnectSubscription;
+  public connectSubscription;
+  public lastInternet:boolean = true; // true = connectedToIntternet
   public ngOnInit():void{
+
+
     //this.store.dispatch(new stateActions.LogIn());
     this.afAuth.user.subscribe((user) => {
       /*
@@ -25,6 +33,7 @@ export class AppComponent implements OnInit{
       else this.store.dispatch(new stateActions.LogIn(user))
       */
      if(user){
+       /*
        console.log(user);
        this.store.dispatch(new stateActions.LogIn());
 
@@ -63,14 +72,17 @@ export class AppComponent implements OnInit{
           ...userToBeSent
         });
       }
+      */
     }
      else {
+       /*
       this.store.dispatch(new stateActions.LogOut());
       this.store.dispatch(new stateActions.SetUserData(null))
+      */
      }
      
   });
-
+/*
   this.store.subscribe(data => {
     if(data[0].isLoggedIn){
       this.appPages[2].title = "Contul meu";
@@ -81,7 +93,7 @@ export class AppComponent implements OnInit{
       this.appPages[2].url = '/login';
     }
   });
-
+*/
 
   }
 
@@ -98,39 +110,55 @@ export class AppComponent implements OnInit{
     });
   }
 
-  public appPages = [
-    {
-      title: 'Home',
-      url: '/home',
-      icon: 'home'
-    },
-    {
-      title: 'List',
-      url: '/list',
-      icon: 'list'
-    },
-    {
-      title:'',
-      url:'',
-      icon:'contact'
-    }
-  ];
+  public appPages = pages;
+
+  onDestroy():void{
+    this.disconnectSubscription.unsubscribe();
+    this.connectSubscription.unsubscribe();
+  }
 
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
-    private store: Store<fromState.State>,
+    private store: Store<fromState.AppState>,
     private afAuth: AngularFireAuth,
-    private afStore: AngularFirestore
+    private afStore: AngularFirestore,
+    private network: Network,
+    public toastController: ToastController
   ) {
     this.initializeApp();
   }
 
+  async presentToast(message:string) {
+    const toast = await this.toastController.create({
+      message,
+      duration: 2000
+    });
+    toast.present();
+  }
+
   initializeApp() {
+
+
+    this.store.select(fromState.selectNetWorkData).subscribe(data => {
+        console.log(data.lastNetworkConnectionStatus, data.networkConnectionStatus);
+        if(data.lastNetworkConnectionStatus != data.networkConnectionStatus){
+          let message = data.networkConnectionStatus == true ? "Sunteţi din nou online" : "Sunteţi offline";
+          this.presentToast(message);
+        }
+    });
+    
     this.platform.ready().then(() => {
-      this.statusBar.styleDefault();
-      this.splashScreen.hide();
+
+      // platform specific design.. |
+      if(this.platform.is('cordova')){
+        this.splashScreen.hide();
+        this.statusBar.backgroundColorByHexString('#0048ce');
+        this.statusBar.styleLightContent();
+        this.store.dispatch(stateActions.watchNetworkConnection()); //watch network by ngrx
+      }
+
     });
   }
 }

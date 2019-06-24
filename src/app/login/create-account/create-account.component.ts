@@ -7,9 +7,6 @@ import { CountryPhone } from './country-phone.model';
 import { PasswordValidator } from '../validators/password.validator';
 import { UsernameValidator } from '../validators/username.validator';
 import {countries} from '../validators/phone.validator';
-import { Store } from '@ngrx/store';
-import * as fromState from '../state/index';
-import * as stateActions from '../state/user.actions';
 import { CreateAccountService } from './create-account.service';
 import { LoadingController } from '@ionic/angular';
 

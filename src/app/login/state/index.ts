@@ -1,19 +1,29 @@
 import * as fromRoot from '../../state/index';
-import * as fromUser from './user.reducer';
+
 
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { User } from '../models/user';
-import { UserState } from './user.reducer';
+import { UserLoginAccount, UserCreateAccount } from '../models/user';
 
-export interface State extends fromRoot.State{
-    userModule: UserState
+
+export interface State extends fromRoot.AppState{
+    login: LoginState;
 }
 
-const getUserFeatureState = createFeatureSelector<fromUser.UserState>('user');
+export interface LoginState{
+    createAccountInformation:UserCreateAccount;
+    loginAccountInformation:UserLoginAccount;
+}
 
-export const getUser = createSelector(
-    getUserFeatureState,
-    state => state.user
+const getLoginFeatureState = createFeatureSelector<LoginState>('login');
+
+export const getCreateAccountInformation = createSelector(
+    getLoginFeatureState,
+    state => state.createAccountInformation
+);
+
+export const getLoginAccountInformation = createSelector(
+    getLoginFeatureState,
+    state => state.loginAccountInformation
 );
 
 

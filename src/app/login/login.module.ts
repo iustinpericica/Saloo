@@ -7,7 +7,6 @@ import { IonicModule } from '@ionic/angular';
 import { CreateAccountComponent } from './create-account/create-account.component';
 import { LoginAccountComponent } from './login-account/login-account.component';
 import { StoreModule } from '@ngrx/store';
-import { reducer } from './state/user.reducer';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { CreateAccountService } from './create-account/create-account.service';
 import { LoginService } from './login-account/login.service';
@@ -15,6 +14,7 @@ import { SignInService } from './login-main-page/signIn.service';
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import { Facebook } from '@ionic-native/facebook/ngx';
 import { AngularFirestoreModule} from '@angular/fire/firestore';
+import { loginReducer } from './state/user.reducer';
 
 let routes:Routes = [
     {path:'', component: LoginMainPageComponent},
@@ -30,7 +30,7 @@ let routes:Routes = [
         IonicModule,
         RouterModule.forChild(routes),
         ReactiveFormsModule,
-        StoreModule.forFeature('user', reducer),
+        StoreModule.forFeature('login', loginReducer),
         AngularFireAuthModule,
         AngularFirestoreModule
         

@@ -13,7 +13,7 @@ declare let toastr;
 @Injectable()
 export class AccountManagementService{
     
-    constructor(private afAuth: AngularFireAuth, private router: Router, private afStore: AngularFirestore, private store: Store<fromState.State>){}
+    constructor(private afAuth: AngularFireAuth, private router: Router, private afStore: AngularFirestore, private store: Store<fromState.AppState>){}
 
     public logout():void{
         this.afAuth.auth.signOut().then(data => {
