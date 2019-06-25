@@ -2,7 +2,7 @@ import * as fromRoot from '../../state/index';
 
 
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { UserLoginAccount, UserCreateAccount } from '../models/user';
+import { UserLoginAccount, UserCreateAccount } from '../../models/user';
 
 
 export interface State extends fromRoot.AppState{

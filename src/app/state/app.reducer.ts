@@ -1,39 +1,14 @@
 import {StateTypes } from './app.actions';
 
-import {RootState, NetworkState} from './index';
+import {RootState, NetworkState, UserRootState} from './index';
 import * as actions from './app.actions';
 import { createReducer, on } from '@ngrx/store';
 
-/*
-export function reducer(state = initialState, action: StateActions){
-    switch(action.type){
-
-        case StateTypes.LogOut:
-            state.userData.isLoggedIn = false;
-            return {
-                state
-            }
-
-        case StateTypes.LogIn:
-                state.userData.isLoggedIn = true;
-                return {
-                    state
-                }
-
-        case StateTypes.SetUserData:
-            return{
-                ...state,
-                userData: action.payload
-            }
-
-        default:
-            return state;
-    }
-}
-*/
-
 const initialState : RootState = {
-    userData: null,
+    userData: {
+        userComplex:null,
+        userInfoBasic:null
+    },
     networkData:{
         lastNetworkConnectionStatus:true,
         networkConnectionStatus:true
@@ -42,8 +17,6 @@ const initialState : RootState = {
 
 export const rootReducer = createReducer(
     initialState,
-    on(actions.loginAction , (state, {user}) => ({...state, userData: user})),
-    on(actions.logoutAction , (state) => ({...state, userData: null})),
     on(actions.networkConnect , (state) => {
         let networkData:NetworkState = {
             lastNetworkConnectionStatus : state.networkData.networkConnectionStatus,
@@ -59,6 +32,27 @@ export const rootReducer = createReducer(
         
         }
         return {...state, networkData}
+    }),
+    on(actions.Authenticated, (state, {user})=>{
+        let userData:UserRootState = {
+            userComplex: state.userData.userComplex,
+            userInfoBasic: user
+        };
+        return {...state, userData} 
+    }),
+    on(actions.NotAuthenticated, (state)=>{
+        let userData:UserRootState = {
+            userComplex: null,
+            userInfoBasic: null
+        };
+        return {...state, userData} 
+    }),
+    on(actions.gotUserDetailedDataAction, (state, {user})=>{
+        let userData:UserRootState = {
+            userComplex: user,
+            userInfoBasic: state.userData.userInfoBasic
+        };
+        return {...state, userData} 
     })
 )
 

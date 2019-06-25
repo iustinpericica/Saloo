@@ -2,3 +2,36 @@
   max-height: 35vh;
   overflow: hidden;
 }
+
+ion-content{
+
+    #firstPartWrapper{
+      padding:10px;
+      background-color:beige;
+      width:100%;
+      background-image: url('/assets/pictures/girlAtSaloon.jpg') !important;
+      background-size: cover;
+
+      #contentWrapper{
+
+        margin:20px 7px;
+        background-color:white;
+        font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace;
+        border-radius:4px;
+        padding:10px;
+
+        ion-item{
+
+          .questionMarker{
+            border: 1px grey;
+            border-radius:2px;
+          }
+          
+      }
+
+      }
+
+    }
+  
+}
+

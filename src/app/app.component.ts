@@ -9,7 +9,7 @@ import * as stateActions from './state/app.actions';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
 import {AngularFirestoreModule} from '@angular/fire/firestore';
-import { User, UserClass } from './login/models/user';
+import { User, UserClass } from './models/user';
 import { Network } from '@ionic-native/network/ngx';
 import { ToastController } from '@ionic/angular';
 import { pages } from './shared/pages';
@@ -20,71 +20,13 @@ import { pages } from './shared/pages';
 })
 export class AppComponent implements OnInit{
 
-  public disconnectSubscription;
-  public connectSubscription;
-  public lastInternet:boolean = true; // true = connectedToIntternet
+
+  public appPages:any = pages;
+
   public ngOnInit():void{
 
-
-    //this.store.dispatch(new stateActions.LogIn());
-    this.afAuth.user.subscribe((user) => {
-      /*
-      if(!user)this.store.dispatch(new stateActions.LogOut());
-      else this.store.dispatch(new stateActions.LogIn(user))
-      */
-     if(user){
-       /*
-       console.log(user);
-       this.store.dispatch(new stateActions.LogIn());
-
-       this.afStore.collection('/users').doc<User>(user.uid).valueChanges().subscribe(data => {
-
-          this.store.dispatch(new stateActions.SetUserData(data))
-
-       });
-       if(user.providerData[0].providerId == 'google.com' || user.providerData[0].providerId == 'facebook.com'){
-
-        let userToBeSent:User = {
-          uid: user.uid,
-          email:user.email,
-          displayName: user.displayName,
-          emailVerified: user.emailVerified,
-          provider: user.providerData[0].providerId
-        }
-
-        let UserEmpty = new UserClass();
-          this.createUser({
-            ...UserEmpty,
-            ...userToBeSent
-          });
-      }
-      else {
-        let userToBeSent:User = {
-          uid: user.uid,
-          email:user.email,
-          emailVerified:false,
-          provider: 'e-mail'
-        }
-        
-        let UserEmpty = new UserClass();
-        this.createUser({
-          ...UserEmpty,
-          ...userToBeSent
-        });
-      }
-      */
-    }
-     else {
-       /*
-      this.store.dispatch(new stateActions.LogOut());
-      this.store.dispatch(new stateActions.SetUserData(null))
-      */
-     }
-     
-  });
-/*
-  this.store.subscribe(data => {
-    if(data[0].isLoggedIn){
+  this.store.select(fromState.selectUserLoggedIn).subscribe((loggedIn:boolean) => {
+    if(loggedIn){
       this.appPages[2].title = "Contul meu";
       this.appPages[2].url = '/my-account';
     }
@@ -92,29 +34,14 @@ export class AppComponent implements OnInit{
       this.appPages[2].title = "Autentificati-va sau creati un cont";
       this.appPages[2].url = '/login';
     }
-  });
-*/
+  })
 
   }
 
-  public createUser(userInfo){
-    const usersRef = this.afStore.collection('users').doc(userInfo.uid)
 
-    usersRef.get()
-      .subscribe((docSnapshot) => {
-        if (docSnapshot.exists) {
-          usersRef.update(userInfo);
-        } else {
-          usersRef.set(userInfo);
-        }
-    });
-  }
-
-  public appPages = pages;
 
   onDestroy():void{
-    this.disconnectSubscription.unsubscribe();
-    this.connectSubscription.unsubscribe();
+
   }
 
   constructor(
@@ -122,9 +49,6 @@ export class AppComponent implements OnInit{
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private store: Store<fromState.AppState>,
-    private afAuth: AngularFireAuth,
-    private afStore: AngularFirestore,
-    private network: Network,
     public toastController: ToastController
   ) {
     this.initializeApp();
@@ -150,6 +74,8 @@ export class AppComponent implements OnInit{
     });
     
     this.platform.ready().then(() => {
+
+      this.store.dispatch(stateActions.getUserAction());
 
       // platform specific design.. |
       if(this.platform.is('cordova')){

@@ -1,4 +1,4 @@
-import {User, UserCreateAccount, UserLoginAccount} from '../models/user';
+import {User, UserCreateAccount, UserLoginAccount} from '../../models/user';
 
 import {Action, createAction, props} from '@ngrx/store';
 

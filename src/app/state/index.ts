@@ -1,9 +1,13 @@
-import { User } from '../login/models/user';
+import { User, UserBasicFirebase } from '../models/user';
 import { createSelector, State } from '@ngrx/store';
 
+export interface AppState{
+    root: RootState
+}
+
 export interface RootState{
-    userData:User;
-    networkData:NetworkState
+    userData:UserRootState;
+    networkData:NetworkState;
 
 }
 
@@ -12,13 +16,15 @@ export interface NetworkState{
     lastNetworkConnectionStatus:boolean;
 }
 
-export interface AppState{
-    root: RootState
+export interface UserRootState{
+    userInfoBasic: UserBasicFirebase,
+    userComplex: User
 }
 
 export let selectRoot = (state: AppState) => state.root;
 
 export const selectNetWorkData = (state: AppState) => state.root.networkData;
+export const selectUserData = (state:AppState) => state.root.userData;
 
 export const selectNetworkConnection = createSelector(
     selectNetWorkData,
@@ -30,6 +36,15 @@ export const selectLastNetworkConnection = createSelector(
     (state: NetworkState) => state.lastNetworkConnectionStatus
 );
 
+export const selectUserLoggedIn = createSelector(
+    selectUserData,
+    (state: UserRootState) => !!state.userInfoBasic
+)
+
+export const selectUserComplexData = createSelector(
+    selectUserData,
+    (state: UserRootState) => state.userComplex
+)
 
 
 // Designed by Iustin Pericica

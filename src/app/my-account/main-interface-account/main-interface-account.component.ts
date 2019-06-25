@@ -24,9 +24,8 @@ export class MainInterfaceAccountComponent implements OnInit {
 
 
   ngOnInit() {
-    this.store.pipe(
-      map(data => data[0].userData)
-    ).subscribe(data => {
+    this.store.select(fromState.selectGetUserComplexData)
+    .subscribe(data => {
       let counterAll = 0, counterFalses = 0;
       let allFalses:Array<string> = new Array<string>();
       for(let i in data){

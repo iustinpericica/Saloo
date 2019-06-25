@@ -2,7 +2,7 @@ import { Component, OnInit} from '@angular/core';
 import { countries } from 'src/app/login/validators/phone.validator';
 import {Location} from '@angular/common';
 import {map, delay} from 'rxjs/operators';
-import { User } from 'src/app/login/models/user';
+import { User } from 'src/app/models/user';
 import { AccountManagementService } from '../accountManagement.service';
 import { LoadingController } from '@ionic/angular';
 
@@ -47,7 +47,6 @@ export class PersonalDetailsComponent implements OnInit {
   ngOnInit() {
     
     this.countries = countries.map(val => val[1]);
-    console.log("mata");
     this.accountManagementService.getUserInfo().subscribe(data => {
       this.formControls = {
         ...this.formControls,
