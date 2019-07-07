@@ -5,6 +5,52 @@
 
 ion-content{
 
+  mat-slider {
+    width: 300px;
+  }
+  
+  
+  
+  .scrolling-wrapper {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  
+    .card {
+      display: inline-block;
+      width:50%;
+    }
+  }
+
+  .scrolling-wrapper {
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+  
+  .box{
+    margin:12px 0px;
+    background-color: white;
+
+    .innerbox{
+      padding:10px 0px 10px 10px;
+
+      img{
+        width:100%;
+        border-radius: 5px;
+      }
+    }
+
+    h2{
+      padding:10px 0px;
+    }
+  }
+
+    agm-map {
+      height: 300px;
+    }
+
     #firstPartWrapper{
       padding:10px;
       background-color:beige;

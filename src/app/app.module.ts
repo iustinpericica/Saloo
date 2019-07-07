@@ -1,3 +1,4 @@
+import '../polyfills';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
@@ -26,7 +27,9 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
 import { NgCircleProgressModule } from 'ng-circle-progress';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { RootEffects } from './state/app.effects';
-
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatGoogleMapsAutocompleteModule } from '@angular-material-extensions/google-maps-autocomplete';
+import { AgmCoreModule } from '@agm/core';
 
 const devTools = {
   name: 'APM Demo App DevTools',
@@ -39,6 +42,7 @@ const devTools = {
   entryComponents: [],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     IonicModule.forRoot(),
     AppRoutingModule,
     AngularFireAuthModule,
@@ -49,7 +53,8 @@ const devTools = {
     StoreDevtoolsModule.instrument(devTools),
     NgCircleProgressModule.forRoot({}),
     AngularFirestoreModule,
-    EffectsModule.forRoot([RootEffects])
+    EffectsModule.forRoot([RootEffects]),
+    MatGoogleMapsAutocompleteModule
   ],
   providers: [
     StatusBar,

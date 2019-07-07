@@ -1,0 +1,62 @@
+ion-content{
+
+    #autocomplete-container{
+        height:50px !important;
+    }
+
+    #mainWrapper{
+        background-color:white;
+        margin-top:20px;
+        .box{
+            background-color:grey;
+            width:96%;
+            height:auto;
+            margin:auto;
+            padding:5px;
+            border-radius: 5px;
+
+            .firstPartImage{
+                display: flex;
+                justify-content: center;
+                height: 100%;
+                width:auto;
+                background-image: url('/assets/pictures/blackMan.jpg');
+                background-size: cover;
+                background-position: center;
+                
+            }
+
+            .secondPartWrapper{
+                h5{
+                    padding:0;
+                    margin:0;
+
+                }
+
+                star-rating{
+                    margin:0;
+                    padding:0;
+                }
+
+                p{
+                    font-size:10px;
+                }
+            }
+
+            .priceInfo{
+                p{
+                    text-align:right;
+                    padding:0;
+                    margin:0;
+                }
+            }
+
+            .appointmentInfo{
+                ion-button{
+                    font-size:8px;
+                    margin-left:0;
+                }
+            }
+        }
+    }
+}

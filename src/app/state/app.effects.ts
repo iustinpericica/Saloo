@@ -109,5 +109,14 @@ export class RootEffects {
     private network: Network,
     private afAuth: AngularFireAuth,
     private afStore: AngularFirestore
-  ) {}
+  ) {
+
+    this.afStore.collectionGroup('haircut', ref => ref.where('date', '==', '7/2/2019')).get().subscribe(data => {
+      
+      for( let x of data.docs){
+        console.log(x.data().salon);
+      }
+    })
+
+  }
 }

@@ -13,6 +13,9 @@ import { User, UserClass } from './models/user';
 import { Network } from '@ionic-native/network/ngx';
 import { ToastController } from '@ionic/angular';
 import { pages } from './shared/pages';
+import {Title} from '@angular/platform-browser';
+
+
 
 @Component({
   selector: 'app-root',

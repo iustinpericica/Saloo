@@ -23,27 +23,166 @@
 
       <p>Ce</p>
 
-      <ion-item lines = "full" class = "questionMarker">
-          <ion-input type="text" name = "search"  placeholder = "Service, Stylist sau Salon"></ion-input>
-          <ion-icon name="search" slot = "start"></ion-icon>
-      </ion-item>
+      <ion-searchbar animated [(ngModel)] = "searchData"></ion-searchbar>
 
       <p>Unde</p>
 
-      <ion-item lines = "full" class = "questionMarker">
+      <!-- <ion-item lines = "full" class = "questionMarker">
           <ion-input type="text" name = "search"  placeholder = "Oraş sau Judeţ"></ion-input>
           <ion-icon name="search" slot = "start"></ion-icon>
+      </ion-item> -->
+
+
+      <div class="container" fxLayout="column" fxLayoutAlign="center">
+ 
+        <mat-checkbox
+          [(ngModel)]="showMap"
+          [labelPosition]="before"
+          >
+        Show map
+      </mat-checkbox>
+
+      <ion-item>
+        <ion-range min="2" max="20" step="2" pin="true" [(ngModel)] = "kmRange">
+          <ion-icon size="small" slot="start" name="compass"></ion-icon>
+        </ion-range>
       </ion-item>
+
+        <div fxFlex *ngIf = "showMap">
+          <agm-map [latitude]="latitude" [longitude]="longitude" [scrollwheel]="false" [zoom]="zoom">
+            <agm-marker [latitude]="latitude" [longitude]="longitude"></agm-marker>
+          </agm-map>
+        </div>
+
+        
+     
+        <div fxFlex fxFlexAlign="center"
+             class="autocomplete-container">
+             <mat-google-maps-autocomplete [appearance]="appearance.OUTLINE"
+             (onAutocompleteSelected)="onAutocompleteSelected($event)"
+             (onLocationSelected)="onLocationSelected($event)">
+            </mat-google-maps-autocomplete>
+        </div>
+     
+      </div>
+
 
       <p>Când</p>
 
       <ion-item lines = "full" class = "questionMarker">
-          <ion-input type="text" name = "search"  placeholder = "Oricând"></ion-input>
-          <ion-icon name="search" slot = "start"></ion-icon>
+        <mat-form-field class="example-full-width">
+          <input matInput [matDatepicker]="picker" [min]="minDate" ngModel (ngModelChange) = "changeDate($event)" placeholder="Choose a date">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker touchUi #picker></mat-datepicker>
+        </mat-form-field>
       </ion-item>
+
+      <ion-button shape="round" fill="outline" color = "primary" (click) = "search()">Caută</ion-button>
 
     </div>
 
   </div>
+
+  <div class = "box">
+    <div class = "innerbox">
+    <h2>Saloanele dumneavoastră preferate</h2>
+      <div class="scrolling-wrapper">
+        <div class="card">
+          <ion-card>
+
+              <img src = "/assets/pictures/hotel.jpg" />
+
+              <ion-card-header>
+                <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+                <ion-card-title>Card Title</ion-card-title>
+              </ion-card-header>
+            
+              <ion-card-content>
+                Keep close to Nature's heart... and break clear away, once in awhile,
+                and climb a mountain or spend a week in the woods. Wash your spirit clean.
+              </ion-card-content>
+            </ion-card>
+        </div>
+
+        <div class="card">
+            <ion-card>
+  
+                <img src = "/assets/pictures/hotel.jpg" />
+  
+                <ion-card-header>
+                  <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+                  <ion-card-title>Card Title</ion-card-title>
+                </ion-card-header>
+              
+                <ion-card-content>
+                  Keep close to Nature's heart... and break clear away, once in awhile,
+                  and climb a mountain or spend a week in the woods. Wash your spirit clean.
+                </ion-card-content>
+              </ion-card>
+          </div>
+
+          <div class="card">
+              <ion-card>
+    
+                  <img src = "/assets/pictures/hotel.jpg" />
+    
+                  <ion-card-header>
+                    <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+                    <ion-card-title>Card Title</ion-card-title>
+                  </ion-card-header>
+                
+                  <ion-card-content>
+                    Keep close to Nature's heart... and break clear away, once in awhile,
+                    and climb a mountain or spend a week in the woods. Wash your spirit clean.
+                  </ion-card-content>
+                </ion-card>
+          </div>
+
+            <div class="card">
+                <ion-card>
+      
+                    <img src = "/assets/pictures/hotel.jpg" />
+      
+                    <ion-card-header>
+                      <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+                      <ion-card-title>Card Title</ion-card-title>
+                    </ion-card-header>
+                  
+                    <ion-card-content>
+                      Keep close to Nature's heart... and break clear away, once in awhile,
+                      and climb a mountain or spend a week in the woods. Wash your spirit clean.
+                    </ion-card-content>
+                  </ion-card>
+            </div>
+        
+      </div>
+  </div>
+</div>
+
+<div class = "box">
+    <div class = "innerbox">
+    <h2>Hot in oraşul tău </h2>
+      <div class="scrolling-wrapper">
+        <div class="card">
+          <ion-card>
+
+              <img src = "/assets/pictures/beautifulSalon.jpg" />
+
+              <ion-card-header>
+                <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+                <ion-card-title>Card Title</ion-card-title>
+              </ion-card-header>
+            
+              <ion-card-content>
+                Keep close to Nature's heart... and break clear away, once in awhile,
+                and climb a mountain or spend a week in the woods. Wash your spirit clean.
+              </ion-card-content>
+            </ion-card>
+        </div>     
+      </div>
+  </div>
+</div>
+
+  
 
 </ion-content>

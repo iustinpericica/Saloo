@@ -1,0 +1,129 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title slot = "start">
+      Rezultate
+    </ion-title>
+    <ion-item slot = "end" lines = "none" *ngIf = "selectedLocation">
+      <ion-icon name="pin"></ion-icon>
+      <ion-label >{{selectedLocation}}</ion-label>
+  
+    </ion-item>
+  </ion-toolbar>
+
+</ion-header>
+
+<div>
+  <ion-grid>
+    <ion-row>
+        <ion-col size="9" style="padding-right:0;" class="fromSearch">
+          <ion-searchbar style="padding-right:0;" [(ngModel)] = "searchData"></ion-searchbar>
+        </ion-col>
+        <ion-col style="padding-left:0;" class="fromSearch">
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col>
+          <ion-item lines = "full" class = "questionMarker">
+            <mat-form-field class="example-full-width">
+              <input matInput [matDatepicker]="picker" [min]="minDate" [(ngModel)] = "dateSelected" placeholder="Choose a date">
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker touchUi #picker></mat-datepicker>
+            </mat-form-field>
+          </ion-item>
+        </ion-col>
+
+        <ion-col>
+          
+        </ion-col>
+
+        <ion-col>
+          <ion-button fill = "outline">
+            <ion-icon name="map"></ion-icon>
+            Arată harta
+          </ion-button>
+        </ion-col>
+      </ion-row>
+  </ion-grid>
+  <ion-item>
+    <ion-range min="2" max="20" step="2" pin="true" [(ngModel)] = "range">
+      {{range }}km<ion-icon size="small" slot="start" name="compass"></ion-icon>
+    </ion-range>
+  </ion-item>
+  <ion-button style="padding-left:0;" (click) = "try()">Search</ion-button>
+</div>
+<ion-content>
+  <ion-list *ngIf = "!dataLoaded">
+    <ion-item *ngFor = "let x of [1, 2, 3, 4, 5, 6, 7]">
+      <ion-avatar slot="start">
+        <ion-skeleton-text animated></ion-skeleton-text>
+      </ion-avatar>
+      <ion-label>
+        <h3>
+          <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+        </h3>
+        <p>
+          <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
+        </p>
+        <p>
+          <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+        </p>
+      </ion-label>
+    </ion-item>   
+  </ion-list>
+
+  <div *ngIf = "dataLoaded" id = "mainWrapper">
+    <div class="box" *ngFor = "let salon of salonsFetched" (click) = "goToSalon(salon.salonName)">
+      <ion-grid class="row-eq-height">
+        <ion-row align-items-stretch>
+          <ion-col size = "4" align-self-stretch>
+            <a class="firstPartImage">
+              
+            </a>
+          </ion-col>
+          <ion-col align-self-stretch size = "8" class = "secondPartWrapper">
+
+
+            <ion-row>
+              <ion-col size = "10">
+                <h5>{{salon.salonName}}</h5>
+                <star-rating value="3.6" checkedcolor="blue" uncheckedcolor="black" size="12px" readonly="true" (rate)="onRate($event)">
+
+                </star-rating>
+                
+                <p><ion-icon name="pin"></ion-icon> {{salon.street}}, la {{salon?.queryMetadata?.distance | number : '1.2-2'}} km de adresa introdusă</p>
+
+              </ion-col>
+              <ion-col size = "2">
+                <ion-icon name="heart"></ion-icon>
+              </ion-col>
+            </ion-row>
+
+            <ion-row>
+              <ion-col size = "2">
+
+              </ion-col>
+              <ion-col size = "10" class="priceInfo">
+                <p>{{salon.duration}}</p>
+                <p>RON {{salon.price}}</p>
+              </ion-col>
+            </ion-row>
+
+            <ion-row class="appointmentInfo">
+              <ion-col size = "6">
+                <ion-button size = "small">13:30, 7/3 Duminică</ion-button>
+              </ion-col>
+              <ion-col size = "6">
+                <ion-button size = "small">Tot programul</ion-button>
+              </ion-col>
+            </ion-row>
+
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+  </div>
+</ion-content>
