@@ -17,6 +17,8 @@ import { BrowserModule, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser'
 import { GestureConfig } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SalonComponent } from './salon/salon.component';
+import { NgxGalleryModule } from 'ngx-gallery';
+import { MakeAppointmentComponent } from './make-appointment/make-appointment.component';
 
 @NgModule({
   imports: [
@@ -34,6 +36,9 @@ import { SalonComponent } from './salon/salon.component';
       },
       {
         path:'salon/:salonName', component: SalonComponent
+      },
+      {
+        path:'appointment/:salonName', component:MakeAppointmentComponent
       }
     ]),
     AngularMaterialModule,
@@ -44,9 +49,10 @@ import { SalonComponent } from './salon/salon.component';
     }),
     MatGoogleMapsAutocompleteModule.forRoot(),
     ReactiveFormsModule,
-    RatingModule
+    RatingModule,
+    NgxGalleryModule
   ],
-  declarations: [HomePage, HighlightPipe, SearchResultComponent, SalonComponent],
+  declarations: [HomePage, HighlightPipe, SearchResultComponent, SalonComponent, MakeAppointmentComponent],
   providers: [
     { provide: HAMMER_GESTURE_CONFIG, useClass: GestureConfig }
   ]

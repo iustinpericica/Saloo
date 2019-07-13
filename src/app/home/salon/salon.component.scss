@@ -1,0 +1,67 @@
+ion-content{
+    #pinnedReview{
+        width:96%;
+        margin:auto;
+        font-size:7px;
+        #firstPart{
+            align-content: center;
+            text-align: center;
+            width:100%;
+            star-rating{
+                margin:auto;
+            }
+        }
+
+        #secondPart{
+            align-content: center;
+            text-align: center;
+            width:100%;
+
+            i{
+                display: block !important;
+                font-size:9px;
+            }
+
+            p{
+                margin:auto;
+                width:100%;
+            }
+        }
+
+        #thirdPart{
+            align-content: center;
+            text-align: center;
+            width:100%;
+            ion-button{
+                margin:auto;
+            }
+        }
+
+    }
+
+    agm-map{
+        height:300px;
+    }
+
+    .categoryService{
+        .titleCategory{
+            p{
+                text-align: center;
+                margin:auto;
+                width:100%;
+                font-size:15px;
+                
+            }
+            
+        }
+    }
+
+    .wrapperaApointmentButton{
+
+        align-content: center;
+        .appointmentButton{
+            margin:auto;
+        }
+
+    }
+}

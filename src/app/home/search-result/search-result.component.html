@@ -76,10 +76,10 @@
   </ion-list>
 
   <div *ngIf = "dataLoaded" id = "mainWrapper">
-    <div class="box" *ngFor = "let salon of salonsFetched" (click) = "goToSalon(salon.salonName)">
+    <div class="box" *ngFor = "let salon of salonsFetched">
       <ion-grid class="row-eq-height">
         <ion-row align-items-stretch>
-          <ion-col size = "4" align-self-stretch>
+          <ion-col size = "4" align-self-stretch  (click) = "goToSalon(salon.salonName)">
             <a class="firstPartImage">
               
             </a>
@@ -113,11 +113,8 @@
             </ion-row>
 
             <ion-row class="appointmentInfo">
-              <ion-col size = "6">
-                <ion-button size = "small">13:30, 7/3 Duminică</ion-button>
-              </ion-col>
-              <ion-col size = "6">
-                <ion-button size = "small">Tot programul</ion-button>
+              <ion-col size = "12">
+                <ion-button size = "medium" (click) = "book(salon.salonName)">Vezi locuri libere pe {{queryData}}</ion-button>
               </ion-col>
             </ion-row>
 

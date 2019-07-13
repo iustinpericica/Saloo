@@ -44,6 +44,9 @@
               },
               {
                 "input": "node_modules/toastr/toastr.scss"
+              },
+              {
+                "input" : "node_modules/font-awesome/css/font-awesome.css"
               }
             ],
             "scripts": [

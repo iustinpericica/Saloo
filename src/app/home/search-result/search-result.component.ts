@@ -24,9 +24,21 @@ export class SearchResultComponent implements OnInit {
   public appearance = Appearance;
   public selectedLocation:string;
   public lat:number; public lng:number;
+  public queryData:string;
   public geo;
   public range:number;
   public query:Subscription;
+
+  public book(salonName:string){
+    let obiect:any = {
+      service: this.searchData
+    }
+    if(this.dateSelected)obiect.date = this.queryData;
+    this.router.navigate(['/home/appointment', salonName], {
+      queryParams:obiect
+    })
+  }
+
   constructor(private router: Router, private route: ActivatedRoute, private afStore: AngularFirestore, @Inject(FirebaseApp) firebaseApp: any) {
     
 
@@ -34,6 +46,7 @@ export class SearchResultComponent implements OnInit {
     this.route.queryParams.subscribe(data => {
       if(data.dateChoosen){
         
+        this.queryData = data.dateChoosen;
         let splittedData = data.dateChoosen.split('.');
         let newDate = new Date(+splittedData[2], (+splittedData[0] - 1), +splittedData[1]);
         this.dateSelected = newDate;

@@ -1,0 +1,59 @@
+<ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title slot = "start">
+        Programare <span *ngIf = "salonName">la {{salonName}}</span>
+      </ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content *ngIf = "dataLoaded && !error">
+
+    <ion-item>
+      <ion-label>Serviciul ales</ion-label>
+      <ion-input [(ngModel)] = "selectedService" [disabled] = "locked"></ion-input>
+      <ion-icon name="unlock" *ngIf = "locked" slot = "end" (click) = "locked = !locked"></ion-icon>
+      <ion-icon name="lock" *ngIf = "!locked" slot = "end" (click) = "locked = !locked"></ion-icon>
+    </ion-item>
+
+    <mat-form-field class="example-full-width">
+        <input matInput [matDatepicker]="picker" [min]="minDate" [(ngModel)] = "dateSelected" placeholder="Choose a date" (ngModelChange)="onChangeTime()">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker touchUi #picker (selectedChanged)="onChangeTime()"></mat-datepicker>
+    </mat-form-field>
+
+    <h2>Program valabil</h2>
+    <ion-list>
+      <ion-item *ngFor = "let slot of slotsAvailable">
+        {{slot}}
+      </ion-item>
+    </ion-list>
+
+  </ion-content> 
+
+  <ion-content *ngIf = "!dataLoaded && !error">
+    <ion-list *ngIf = "!dataLoaded">
+          <ion-item *ngFor = "let x of [1, 2, 3, 4, 5, 6, 7]">
+            <ion-avatar slot="start">
+              <ion-skeleton-text animated></ion-skeleton-text>
+            </ion-avatar>
+            <ion-label>
+              <h3>
+                <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+              </h3>
+              <p>
+                <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
+              </p>
+              <p>
+                <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+              </p>
+            </ion-label>
+          </ion-item>   
+    </ion-list>
+  </ion-content>
+
+  <ion-content *ngIf = "error">
+    <h2>Ceva nu a mers bine</h2>
+  </ion-content>
