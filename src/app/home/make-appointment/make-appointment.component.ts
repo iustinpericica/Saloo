@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { AlertController } from '@ionic/angular';
+import {AngularFireFunctions} from '@angular/fire/functions';
 
 @Component({
   selector: 'app-make-appointment',
@@ -21,7 +23,7 @@ export class MakeAppointmentComponent implements OnInit {
   public error:boolean =  false;
   public slotsAvailable:Array<string> = new Array<string>();
 
-  constructor(private activatedRoute: ActivatedRoute, private afStore: AngularFirestore, private router: Router) { 
+  constructor(private activatedRoute: ActivatedRoute, private afStore: AngularFirestore, private router: Router, public alertController: AlertController, public functions: AngularFireFunctions) { 
     this.salonName = this.activatedRoute.snapshot.params.salonName;
 
     this.activatedRoute.queryParams.subscribe(data => {
@@ -75,6 +77,10 @@ export class MakeAppointmentComponent implements OnInit {
     })
    }
 
+   public testFunction():void{
+     this.functions.httpsCallable('appointMe')('').subscribe(data => console.log(data));
+   }
+
    public changeDate(){
     let formattedData = (this.dateSelected.getMonth() + 1) + '.' + this.dateSelected.getDate() + '.' + this.dateSelected.getFullYear();
     return formattedData;
@@ -91,5 +97,30 @@ export class MakeAppointmentComponent implements OnInit {
    }
 
   ngOnInit() {}
+
+
+  async presentAlertConfirm(slot:string) {
+    const alert = await this.alertController.create({
+      header: 'Confirmare rezervare',
+      message: `Rezervarea este pe <strong>${slot}</strong>!!!`,
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'danger',
+          handler: (blah) => {
+            console.log('Confirm Cancel: blah');
+          }
+        }, {
+          text: 'Okay',
+          handler: () => {
+            console.log('Confirm Okay ' + slot);
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
 
 }

@@ -12,6 +12,7 @@
   <ion-content *ngIf = "dataLoaded && !error">
 
     <ion-item>
+      <button (click) = "testFunction()">Test f.</button>
       <ion-label>Serviciul ales</ion-label>
       <ion-input [(ngModel)] = "selectedService" [disabled] = "locked"></ion-input>
       <ion-icon name="unlock" *ngIf = "locked" slot = "end" (click) = "locked = !locked"></ion-icon>
@@ -28,6 +29,7 @@
     <ion-list>
       <ion-item *ngFor = "let slot of slotsAvailable">
         {{slot}}
+        <ion-button slot = "end" (click) = "presentAlertConfirm(slot)">Programeaza-te</ion-button>
       </ion-item>
     </ion-list>
 
@@ -55,5 +57,19 @@
   </ion-content>
 
   <ion-content *ngIf = "error">
+
+    <ion-item>
+        <ion-label>Serviciul ales</ion-label>
+        <ion-input [(ngModel)] = "selectedService" [disabled] = "locked"></ion-input>
+        <ion-icon name="unlock" *ngIf = "locked" slot = "end" (click) = "locked = !locked"></ion-icon>
+        <ion-icon name="lock" *ngIf = "!locked" slot = "end" (click) = "locked = !locked"></ion-icon>
+      </ion-item>
+  
+      <mat-form-field class="example-full-width">
+          <input matInput [matDatepicker]="picker" [min]="minDate" [(ngModel)] = "dateSelected" placeholder="Choose a date" (ngModelChange)="onChangeTime()">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker touchUi #picker (selectedChanged)="onChangeTime()"></mat-datepicker>
+      </mat-form-field>
+
     <h2>Ceva nu a mers bine</h2>
   </ion-content>

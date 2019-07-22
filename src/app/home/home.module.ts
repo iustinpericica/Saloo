@@ -19,6 +19,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SalonComponent } from './salon/salon.component';
 import { NgxGalleryModule } from 'ngx-gallery';
 import { MakeAppointmentComponent } from './make-appointment/make-appointment.component';
+import { AngularFireFunctions } from '@angular/fire/functions';
 
 @NgModule({
   imports: [
@@ -54,7 +55,8 @@ import { MakeAppointmentComponent } from './make-appointment/make-appointment.co
   ],
   declarations: [HomePage, HighlightPipe, SearchResultComponent, SalonComponent, MakeAppointmentComponent],
   providers: [
-    { provide: HAMMER_GESTURE_CONFIG, useClass: GestureConfig }
+    { provide: HAMMER_GESTURE_CONFIG, useClass: GestureConfig },
+    AngularFireFunctions
   ]
 })
 export class HomePageModule {}
