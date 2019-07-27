@@ -12,12 +12,27 @@
   <ion-content *ngIf = "dataLoaded && !error">
 
     <ion-item>
-      <button (click) = "testFunction()">Test f.</button>
       <ion-label>Serviciul ales</ion-label>
       <ion-input [(ngModel)] = "selectedService" [disabled] = "locked"></ion-input>
       <ion-icon name="unlock" *ngIf = "locked" slot = "end" (click) = "locked = !locked"></ion-icon>
       <ion-icon name="lock" *ngIf = "!locked" slot = "end" (click) = "locked = !locked"></ion-icon>
     </ion-item>
+
+    <ion-list>
+        <ion-radio-group [(ngModel)] = "ceva" (ionChange) = "changeWorkerSelected($event.detail.value)">
+          <ion-list-header>
+            <ion-label>Stilisti</ion-label>
+          </ion-list-header>
+      
+          <ion-item *ngFor = "let worker of workersAvailable">
+            <ion-label>{{worker}}</ion-label>
+            <ion-radio slot="start" value="{{worker}}"></ion-radio>
+          </ion-item>
+      
+
+        </ion-radio-group>
+      </ion-list>
+
 
     <mat-form-field class="example-full-width">
         <input matInput [matDatepicker]="picker" [min]="minDate" [(ngModel)] = "dateSelected" placeholder="Choose a date" (ngModelChange)="onChangeTime()">

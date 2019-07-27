@@ -4,6 +4,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { AlertController } from '@ionic/angular';
 import {AngularFireFunctions} from '@angular/fire/functions';
 
+
 @Component({
   selector: 'app-make-appointment',
   templateUrl: './make-appointment.component.html',
@@ -22,13 +23,15 @@ export class MakeAppointmentComponent implements OnInit {
   public salonSchedule;
   public error:boolean =  false;
   public slotsAvailable:Array<string> = new Array<string>();
+  public workersAvailable:Array<string>;
+  public workerSelected;
 
   constructor(private activatedRoute: ActivatedRoute, private afStore: AngularFirestore, private router: Router, public alertController: AlertController, public functions: AngularFireFunctions) { 
     this.salonName = this.activatedRoute.snapshot.params.salonName;
 
     this.activatedRoute.queryParams.subscribe(data => {
 
-      console.log(data);
+      //console.log(data);
 
       if(data.date){
         
@@ -36,7 +39,7 @@ export class MakeAppointmentComponent implements OnInit {
         let splittedData = data.date.split('.');
         let newDate = new Date(+splittedData[2], (+splittedData[0] - 1), +splittedData[1]);
         this.dateSelected = newDate;
-        console.log(newDate);
+      //console.log(newDate);           
 
       }
 
@@ -44,28 +47,43 @@ export class MakeAppointmentComponent implements OnInit {
         this.selectedService = data.service;
       }
       let date = this.changeDate();
-      this.afStore.collection('salons').doc(this.salonName).collection('haircut').doc(date).valueChanges().subscribe((data:any) => {
-        if(data){
-        this.error = false;
-        this.salonSchedule = data.schedule;
-        console.log(this.salonSchedule);
-        let durationInHours = data.duration/60;
-        for(let interval of data.schedule){
-          let intervalMini = interval.split('^');
-          for(let start = +intervalMini[0];start<=(+intervalMini[1]) - durationInHours;start+=durationInHours){
-            let fractPart = start - Math.floor(start);
-            let formDateTobePushed;
-            if(fractPart > 0)formDateTobePushed = start.toFixed(0) + ':' + (fractPart*60).toString(); 
-            else formDateTobePushed = start.toFixed(0) + ':' + '00';
-            this.slotsAvailable.push(formDateTobePushed);
+      if(this.workerSelected){
+      this.afStore.collection('workers').doc(this.workerSelected).collection('schedule').doc(date).valueChanges().subscribe((data:any) => {
+      if(data){
+          this.slotsAvailable = [];
+          this.error = false;
+          this.salonSchedule = data.schedule;
+
+          //console.log(this.salonSchedule);
+          let durationInHours = data.duration/60;
+          let duration = data.duration;
+          for(let interval of data.schedule){
+            let intervalMini = interval.split('^');
+            
+            for(let start = Math.floor(this.transformTimeToMinutes(+intervalMini[0]));start<=Math.floor(this.transformTimeToMinutes(+intervalMini[1]) - duration);start+=duration){
+
+              //console.log(start);
+              let minutes = start - (Math.floor(start/60) * 60);
+              let hours = Math.floor(start/60);
+              let slotTobe = hours + ':';
+              if(hours < 10)slotTobe = '0' + slotTobe;
+              if(minutes == 0)slotTobe+='00';
+              else slotTobe+=minutes;
+
+              
+              this.slotsAvailable.push(slotTobe);
+              
+            }
           }
-        }
+
       }
+    
       else {
         this.error = true;
       }
-
       });
+    }
+ 
 
     });
 
@@ -77,9 +95,12 @@ export class MakeAppointmentComponent implements OnInit {
     })
    }
 
-   public testFunction():void{
-     this.functions.httpsCallable('appointMe')('').subscribe(data => console.log(data));
-   }
+   public transformTimeToMinutes(time:number){
+       return Math.floor(time) * 60 + (time - Math.floor(time))*100;
+    }
+   
+
+   
 
    public changeDate(){
     let formattedData = (this.dateSelected.getMonth() + 1) + '.' + this.dateSelected.getDate() + '.' + this.dateSelected.getFullYear();
@@ -96,13 +117,12 @@ export class MakeAppointmentComponent implements OnInit {
      
    }
 
-  ngOnInit() {}
 
 
   async presentAlertConfirm(slot:string) {
     const alert = await this.alertController.create({
       header: 'Confirmare rezervare',
-      message: `Rezervarea este pe <strong>${slot}</strong>!!!`,
+      message: `Rezervarea este la ora <strong>${slot}</strong>, data <strong>${this.dateSelected}</strong>!!!`,
       buttons: [
         {
           text: 'Cancel',
@@ -115,6 +135,7 @@ export class MakeAppointmentComponent implements OnInit {
           text: 'Okay',
           handler: () => {
             console.log('Confirm Okay ' + slot);
+            this.confirmAppointment(slot);
           }
         }
       ]
@@ -122,5 +143,24 @@ export class MakeAppointmentComponent implements OnInit {
 
     await alert.present();
   }
+
+  public confirmAppointment(slot:string){
+    this.functions.httpsCallable('appointMe')({
+      service:this.selectedService,
+      salonName:this.salonName,
+      slot:slot,
+      date:this.queryData
+
+    }).subscribe(data => console.log(data));
+  }
+
+  ngOnInit() {
+    
+  }
+  
+  public changeWorkerSelected(worker){
+    console.log(worker);
+  }
+
 
 }
