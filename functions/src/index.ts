@@ -38,8 +38,10 @@ function returnArrayOfSlotsFromArrayOfSchedule(schedule:Array<string>, duration:
 }
 
 function transformTimeToMinutes(time:number){
-    return Math.floor(time) * 60 + (time - Math.floor(time))*100;
+
+    return Math.floor(time) * 60 + Math.round((time - Math.floor(time))*100);
  }
+
 
 function returnNewSchedule(lastSchedule:Array<string>, duration:number, slot:string){
 
@@ -94,7 +96,7 @@ function returnNewSchedule(lastSchedule:Array<string>, duration:number, slot:str
 export const appointMe = functions.https.onCall(async (data, context) => {
     if(context.auth){
         let userInfo = await admin.firestore().collection('users').doc(context.auth.uid).get();
-
+        console.log(data);
         if(userInfo.data()){
             let userData:any = userInfo.data();
             if(userData.appointmentsUsed < userData.maxAppointment){
@@ -105,20 +107,26 @@ export const appointMe = functions.https.onCall(async (data, context) => {
                 
                 // salon info
                 // atentie ca date sa fie format an.mth.zi
-                let salonInfo:any = await admin.firestore().collection('salons').doc(data.salonName).collection(data.service).doc(data.date).get();
-                
-                if(salonInfo){
-                    salonInfo = salonInfo.data();
-                    if(salonInfo.free){
-                        let arrayOfSlots:Array<string> = returnArrayOfSlotsFromArrayOfSchedule(salonInfo.schedule, salonInfo.duration);
+                console.log(108);
+                let workerInfo:any = await admin.firestore().collection('workers').doc(data.worker).collection('schedule').doc(data.date).get();
+                console.log(110);
+                if(workerInfo){
+                    console.log(112);
+                    let workerInfoData = workerInfo.data();
+                    if(workerInfoData.free){
+                        let arrayOfSlots:Array<string> = returnArrayOfSlotsFromArrayOfSchedule(workerInfoData.schedule, workerInfoData.durations[data.service]);
+                        console.log(arrayOfSlots);
+                        console.log(workerInfoData.schedule, workerInfoData.durations[data.service]);
                         if(arrayOfSlots.find(x => x == data.slot)){
-                            let newSchedule = returnNewSchedule(salonInfo.schedule, salonInfo.duration, data.slot);
-                            await admin.firestore().collection('salons').doc(data.salonName).collection(data.service).doc(data.date).update({
-                                schedule: newSchedule
+
+                            let newSchedule = returnNewSchedule(workerInfoData.schedule, +workerInfoData.durations[data.service] ,data.slot);
+                            console.log(workerInfoData.schedule, newSchedule);
+                            await admin.firestore().collection('workers').doc(data.worker).collection('schedule').doc(data.date).update({
+                                schedule: newSchedule   
                             });
                             const increment = admin.firestore.FieldValue.increment(1);
                             let newAppointment:any = new Object();
-                            newAppointment.salonName = data.salonName;
+                            newAppointment.salonName = workerInfoData.salonName;
                             newAppointment.service = data.service;
                             newAppointment.date = data.date;
                             newAppointment.hour = data.slot;

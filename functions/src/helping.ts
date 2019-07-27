@@ -102,5 +102,5 @@ export function mergeSchedules(schedules:Array<Array<string>>):Array<string>{
 }
 
 function transformTimeToMinutes(time:number){
-    return Math.floor(time) * 60 + (time - Math.floor(time))*100;
+  return Math.floor(time) * 60 + Math.round((time - Math.floor(time))*100);
  }

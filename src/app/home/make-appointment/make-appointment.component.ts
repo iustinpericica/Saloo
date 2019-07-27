@@ -25,6 +25,8 @@ export class MakeAppointmentComponent implements OnInit {
   public slotsAvailable:Array<string> = new Array<string>();
   public workersAvailable:Array<string>;
   public workerSelected;
+  public duration;
+  public problemWithWorker:boolean = false;
 
   constructor(private activatedRoute: ActivatedRoute, private afStore: AngularFirestore, private router: Router, public alertController: AlertController, public functions: AngularFireFunctions) { 
     this.salonName = this.activatedRoute.snapshot.params.salonName;
@@ -47,44 +49,20 @@ export class MakeAppointmentComponent implements OnInit {
         this.selectedService = data.service;
       }
       let date = this.changeDate();
-      if(this.workerSelected){
-      this.afStore.collection('workers').doc(this.workerSelected).collection('schedule').doc(date).valueChanges().subscribe((data:any) => {
+      
+      this.afStore.collection('salons').doc(this.salonName).collection('haircut').doc(date).valueChanges().subscribe((data:any) => {
       if(data){
-          this.slotsAvailable = [];
+
           this.error = false;
           this.salonSchedule = data.schedule;
-
-          //console.log(this.salonSchedule);
-          let durationInHours = data.duration/60;
-          let duration = data.duration;
-          for(let interval of data.schedule){
-            let intervalMini = interval.split('^');
-            
-            for(let start = Math.floor(this.transformTimeToMinutes(+intervalMini[0]));start<=Math.floor(this.transformTimeToMinutes(+intervalMini[1]) - duration);start+=duration){
-
-              //console.log(start);
-              let minutes = start - (Math.floor(start/60) * 60);
-              let hours = Math.floor(start/60);
-              let slotTobe = hours + ':';
-              if(hours < 10)slotTobe = '0' + slotTobe;
-              if(minutes == 0)slotTobe+='00';
-              else slotTobe+=minutes;
-
-              
-              this.slotsAvailable.push(slotTobe);
-              
-            }
-          }
-
-      }
+          this.workersAvailable = data.workers;
+          this.duration = data.duration;
+      } 
     
       else {
         this.error = true;
       }
       });
-    }
- 
-
     });
 
     this.afStore.collection('salons').doc(this.salonName).valueChanges().subscribe(data => {
@@ -96,7 +74,8 @@ export class MakeAppointmentComponent implements OnInit {
    }
 
    public transformTimeToMinutes(time:number){
-       return Math.floor(time) * 60 + (time - Math.floor(time))*100;
+
+       return Math.floor(time) * 60 + Math.round((time - Math.floor(time))*100);
     }
    
 
@@ -149,7 +128,8 @@ export class MakeAppointmentComponent implements OnInit {
       service:this.selectedService,
       salonName:this.salonName,
       slot:slot,
-      date:this.queryData
+      date:this.queryData,
+      worker: this.workerSelected
 
     }).subscribe(data => console.log(data));
   }
@@ -159,7 +139,37 @@ export class MakeAppointmentComponent implements OnInit {
   }
   
   public changeWorkerSelected(worker){
-    console.log(worker);
+
+    this.workerSelected = worker;
+    this.slotsAvailable = [];
+
+    let duration = this.duration;
+
+    this.afStore.collection('workers').doc(worker).collection('schedule').doc(this.queryData).valueChanges().subscribe((data:any) => {
+      if(data){
+      this.problemWithWorker = false;
+      for(let interval of data.schedule){
+        let intervalMini = interval.split('^');
+
+        for(let start = Math.floor(this.transformTimeToMinutes(+intervalMini[0]));start<=Math.floor(this.transformTimeToMinutes(+intervalMini[1]) - duration);start+=duration){
+  
+          //console.log(start);
+          let minutes = start - (Math.floor(start/60) * 60);
+          let hours = Math.floor(start/60);
+          let slotTobe = hours + ':';
+          if(hours < 10)slotTobe = '0' + slotTobe;
+          if(minutes == 0)slotTobe+='00';
+          else slotTobe+=minutes;
+  
+          
+          this.slotsAvailable.push(slotTobe);
+          
+        }
+      }
+    }
+    else this.problemWithWorker = true;
+  })
+
   }
 
 
