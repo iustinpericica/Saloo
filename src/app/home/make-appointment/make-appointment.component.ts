@@ -24,9 +24,9 @@ export class MakeAppointmentComponent implements OnInit {
   public error:boolean =  false;
   public slotsAvailable:Array<string> = new Array<string>();
   public workersAvailable:Array<string>;
-  public workerSelected;
   public duration;
   public problemWithWorker:boolean = false;
+  public selectedStylist:string;
 
   constructor(private activatedRoute: ActivatedRoute, private afStore: AngularFirestore, private router: Router, public alertController: AlertController, public functions: AngularFireFunctions) { 
     this.salonName = this.activatedRoute.snapshot.params.salonName;
@@ -48,15 +48,27 @@ export class MakeAppointmentComponent implements OnInit {
       if(data.service){
         this.selectedService = data.service;
       }
+
+      if(data.stylist){
+        
+        this.selectedStylist= data.stylist;
+      }
       let date = this.changeDate();
+
       
       this.afStore.collection('salons').doc(this.salonName).collection('haircut').doc(date).valueChanges().subscribe((data:any) => {
       if(data){
-
           this.error = false;
           this.salonSchedule = data.schedule;
           this.workersAvailable = data.workers;
           this.duration = data.duration;
+
+          
+          if(this.selectedStylist && this.queryData && this.selectedService){
+
+            this.fetchSlots();
+          }
+
       } 
     
       else {
@@ -73,13 +85,39 @@ export class MakeAppointmentComponent implements OnInit {
     })
    }
 
+     
+  private fetchSlots(){
+    this.slotsAvailable = [];
+    this.afStore.collection('workers').doc(this.selectedStylist).collection('schedule').doc(this.queryData).valueChanges().subscribe((data:any) => {
+      if(data){
+        let duration = this.duration;
+        this.problemWithWorker = false;
+          for(let interval of data.schedule){
+            let intervalMini = interval.split('^');
+            console.log(Math.floor(this.transformTimeToMinutes(+intervalMini[0])), this.transformTimeToMinutes(+intervalMini[1]), duration);
+            for(let start = Math.floor(this.transformTimeToMinutes(+intervalMini[0]));start<=Math.floor(this.transformTimeToMinutes(+intervalMini[1]) - duration);start+=duration){
+      
+              //console.log(start);
+              let minutes = start - (Math.floor(start/60) * 60);
+              let hours = Math.floor(start/60);
+              let slotTobe = hours + ':';
+              if(hours < 10)slotTobe = '0' + slotTobe;
+              if(minutes == 0)slotTobe+='00';
+              else slotTobe+=minutes;
+              this.slotsAvailable.push(slotTobe);
+              
+            }
+          }
+    }
+    else this.problemWithWorker = true;
+  })
+
+  }
+
    public transformTimeToMinutes(time:number){
 
        return Math.floor(time) * 60 + Math.round((time - Math.floor(time))*100);
     }
-   
-
-   
 
    public changeDate(){
     let formattedData = (this.dateSelected.getMonth() + 1) + '.' + this.dateSelected.getDate() + '.' + this.dateSelected.getFullYear();
@@ -129,7 +167,7 @@ export class MakeAppointmentComponent implements OnInit {
       salonName:this.salonName,
       slot:slot,
       date:this.queryData,
-      worker: this.workerSelected
+      worker: this.selectedStylist
 
     }).subscribe(data => console.log(data));
   }
@@ -137,38 +175,12 @@ export class MakeAppointmentComponent implements OnInit {
   ngOnInit() {
     
   }
-  
+
+
   public changeWorkerSelected(worker){
 
-    this.workerSelected = worker;
-    this.slotsAvailable = [];
-
-    let duration = this.duration;
-
-    this.afStore.collection('workers').doc(worker).collection('schedule').doc(this.queryData).valueChanges().subscribe((data:any) => {
-      if(data){
-      this.problemWithWorker = false;
-      for(let interval of data.schedule){
-        let intervalMini = interval.split('^');
-
-        for(let start = Math.floor(this.transformTimeToMinutes(+intervalMini[0]));start<=Math.floor(this.transformTimeToMinutes(+intervalMini[1]) - duration);start+=duration){
-  
-          //console.log(start);
-          let minutes = start - (Math.floor(start/60) * 60);
-          let hours = Math.floor(start/60);
-          let slotTobe = hours + ':';
-          if(hours < 10)slotTobe = '0' + slotTobe;
-          if(minutes == 0)slotTobe+='00';
-          else slotTobe+=minutes;
-  
-          
-          this.slotsAvailable.push(slotTobe);
-          
-        }
-      }
-    }
-    else this.problemWithWorker = true;
-  })
+    this.selectedStylist = worker;
+    this.fetchSlots();
 
   }
 

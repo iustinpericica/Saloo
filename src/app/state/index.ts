@@ -41,6 +41,11 @@ export const selectUserLoggedIn = createSelector(
     (state: UserRootState) => !!state.userInfoBasic
 )
 
+export const selectUserBasicData = createSelector(
+    selectUserData,
+    (state: UserRootState) => state.userInfoBasic
+)
+
 export const selectUserComplexData = createSelector(
     selectUserData,
     (state: UserRootState) => state.userComplex

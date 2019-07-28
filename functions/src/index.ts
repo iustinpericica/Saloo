@@ -14,6 +14,7 @@ export const helloWorld = functions.https.onRequest((request, response) => {
 });
 
 function returnArrayOfSlotsFromArrayOfSchedule(schedule:Array<string>, duration:number){
+    console.log(schedule);
     let arrayToBeReturned: Array<string> = new Array<string>();
     let salonSchedule: Array<string> = schedule;
 
@@ -28,7 +29,7 @@ function returnArrayOfSlotsFromArrayOfSchedule(schedule:Array<string>, duration:
             if(minutes == 0)slotTobe+='00';
             else slotTobe+=minutes;
 
-            
+            console.log(slotTobe);
             arrayToBeReturned.push(slotTobe);
             
         }
@@ -114,7 +115,7 @@ export const appointMe = functions.https.onCall(async (data, context) => {
                     console.log(112);
                     let workerInfoData = workerInfo.data();
                     if(workerInfoData.free){
-                        let arrayOfSlots:Array<string> = returnArrayOfSlotsFromArrayOfSchedule(workerInfoData.schedule, workerInfoData.durations[data.service]);
+                        let arrayOfSlots:Array<string> = returnArrayOfSlotsFromArrayOfSchedule(workerInfoData.schedule, +workerInfoData.durations[data.service]);
                         console.log(arrayOfSlots);
                         console.log(workerInfoData.schedule, workerInfoData.durations[data.service]);
                         if(arrayOfSlots.find(x => x == data.slot)){

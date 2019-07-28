@@ -25,29 +25,6 @@
           <star-rating value="3.6" checkedcolor="blue" uncheckedcolor="black" size="16px" readonly="true"></star-rating>
       </ion-item>
 
-      <ion-item id = "secondPart">
-        <ion-grid>
-
-          <ion-row>
-            <ion-col size="12">
-              <p>
-                  "Nyasia is awesome!!!!! She takes her time and my silk press always last for two weeks or more vs going to ur local domincan beauty salon and having ur hair mess up two days later ( no offense) but she's the truth !! I love herrrr don't wanna share her w/ any one else ❤️❤️❤️. Go to her you won't regret it and she will recommend products for your hair if needed as well! Brooklyn best kept secret? So if your like me looking for a stylist who will keep your hair in great hands book Nyasia !"
-              </p>
-            </ion-col>
-
-          <ion-col size = "12">
-
-            <br/>
-            <i>Iustin Pericica</i>
-
-          </ion-col>
-
-        </ion-row>
-
-      </ion-grid>
-        
-      </ion-item>
-
       <ion-item id = "thirdPart">
         <ion-button>Arată toate review-urile</ion-button>
       </ion-item>
@@ -62,25 +39,24 @@
         <ion-item class="titleCategory">
             <p><b>{{category}}</b></p>
         </ion-item>
-        <ion-item *ngFor = "let service of servicesByCategory[category]">
-            
-          <ion-grid>
-            <ion-row>
-              <ion-col size = "6">
-                <h3>{{service.service}}</h3>
-                <p>{{service.price}}</p>
-                Stilisti:
-                <p *ngFor = "let worker of service.workers">{{worker}}</p>
-              </ion-col>
-              <ion-col size = "6" class="wrapperaApointmentButton">
-                <div class="appointmentButton">
-                  <ion-button (click) = "book(service.service)">Book</ion-button>
-                </div>
-              </ion-col>
-            </ion-row>
-          </ion-grid>
 
-        </ion-item>
+        <mat-accordion>
+
+          <mat-expansion-panel *ngFor = "let service of servicesByCategory[category]" >
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                {{service.service}}
+              </mat-panel-title>
+              <mat-panel-description>
+                
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <h5>Stilisti</h5>
+            <p *ngFor = "let worker of service.workers">
+              {{worker}},<ion-button size = "small" *ngIf = "daysWithDuration[worker]" (click) = "book({service: service.service, date:getFirstDateViaWorker(worker, service.duration), stylist:worker})">{{getFirstDateViaWorker(worker, service.duration)}}</ion-button> , <ion-button size = "small" (click) = "book({service: service.service, stylist:worker})">Alta data</ion-button>
+            </p>
+          </mat-expansion-panel>
+        </mat-accordion>
       </ion-list>
     </div>
   </div>

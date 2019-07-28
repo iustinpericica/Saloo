@@ -18,24 +18,30 @@ export class SalonComponent implements OnInit {
   public dataLoaded:boolean = false;
   public servicesByCategory;
   public servicesTags;
+  public daysWithDuration: any = new Object();
+
 
   constructor(private activatedRoute: ActivatedRoute, private afStore: AngularFirestore, private router: Router) { 
   }
 
-  public book(service){
-    this.router.navigate(['/home/appointment', this.salonName], {queryParams: {
-      service
-    }});
+  public book(info){
+    this.router.navigate(['/home/appointment', this.salonName], {queryParams: info});
   }
 
   ngOnInit() {
     this.salonName = this.activatedRoute.snapshot.params.salonName;
-    this.afStore.collection('salons').doc('1').valueChanges().subscribe(data => {
+    this.afStore.collection('salons').doc(this.salonName).valueChanges().subscribe((data:any) => {
       //change needed 
+      console.log(data);
       this.salonData = data;
       this.dataLoaded = true;
       this.servicesByCategory = this.salonData.servicesInfo;
       this.servicesTags = this.salonData.servicesTags;
+      let employers:Array<string> = data.workers;
+      for(let employer of employers){
+        this.afStore.collection('workers').doc(employer).valueChanges().subscribe((data:any) => this.daysWithDuration[employer] = data.daysWithDuration);
+      }
+
     })
 
 
@@ -83,6 +89,20 @@ export class SalonComponent implements OnInit {
   ];
 
 
-  }
+}
+
+  public getFirstDateViaWorker(worker:string, duration:number):(string | null){
+    let minim = 20000;
+    let minDate:string = '9999.2019.2019';
+    Object.keys(this.daysWithDuration[worker]).forEach(val => {
+
+      if(this.daysWithDuration[worker][val] >= duration && val < minDate){
+        minim = this.daysWithDuration[worker][val];
+        minDate = val;
+      }
+
+    });
+    return minDate != '9999.2019.2019' ? minDate : '';
+}
 
 }

@@ -13,5 +13,10 @@ export const pages:Array<object> = [
     title:'',
     url:'',
     icon:'contact'
+},
+{
+    title:'Rezervări',
+    url:'/my-account/appointments',
+    icon:'star-outline'
 }
 ];

@@ -10,20 +10,21 @@
 <ion-content>
 
   <!-- Segment with secondary color -->
-  <ion-segment (ionChange)="segmentChanged($event)" color="secondary" value = "standard">
-    <ion-segment-button value="standard">
+  <ion-segment (ionChange)="segmentChanged($event)" color="secondary" value = "future">
+    <ion-segment-button value="past">
       <ion-label>TRECUTE</ion-label>
     </ion-segment-button>
-    <ion-segment-button value="hybrid">
+    <ion-segment-button value="now">
       <ion-label>ÎN CURS</ion-label>
     </ion-segment-button>
-    <ion-segment-button value="sat">
+    <ion-segment-button value="future">
       <ion-label>VIITOARE</ion-label>
     </ion-segment-button>
   </ion-segment>
+  {{segmentSelected}}
 
   
-<ion-card>
+<ion-card *ngFor = "let appointment of appointments">
   <!-- <ion-item lines = "none">
     <ion-label class = "title">ion-item in a card, icon left, button right</ion-label>
   
@@ -33,11 +34,9 @@
 
         <div>
 
-          <p><ion-card-title>Card Title</ion-card-title></p>
-          <p><ion-card-subtitle>Card Subtitle</ion-card-subtitle></p>
-
+          <p><ion-card-title>{{appointment.salonName}}</ion-card-title></p>
+          <!-- <p><ion-card-subtitle>Card Subtitle</ion-card-subtitle></p> -->
         </div>
-
           <ion-icon name="trash" slot="end"></ion-icon> 
       </ion-item>
 
@@ -49,7 +48,7 @@
   <ion-button expand="block" class = "comment" fill="outline">Vedeţi comentariul</ion-button>
 
   <ion-item>
-    <ion-label>Data: 23/53/1032, Ora: 13:54</ion-label>
+    <ion-label>Data: {{appointment.date}}, Ora: {{appointment.hour}}</ion-label>
     <ion-label slot = "end">RON 173,43</ion-label>
   </ion-item>
   <ion-button expand="block" class = "comment" fill="outline">Rezervaţi din nou</ion-button>
