@@ -9,6 +9,7 @@ import { formatDate } from '@angular/common';
 import { Observable, Subscription } from 'rxjs';
 import { SalonInterface } from 'src/app/models/salons';
 
+declare const google: any;
 
 @Component({
   selector: 'app-search-result',
@@ -28,6 +29,14 @@ export class SearchResultComponent implements OnInit {
   public geo;
   public range:number;
   public query:Subscription;
+  public showMap:boolean = false;
+  public zoom:number = 10;
+  public showSearchHereButton:boolean = false;
+  public map;
+  public salonSelected:string = null;
+  public currentLat:number;
+  public currentLng:number;
+  
 
   public book(salonName:string){
     let obiect:any = {
@@ -61,8 +70,8 @@ export class SearchResultComponent implements OnInit {
         this.selectedLocation = data.selectedLocation;
       }
 
-      if(data.lat)this.lat = data.lat;
-      if(data.lng)this.lng = data.lng;
+      if(data.lat)this.lat = +data.lat;
+      if(data.lng)this.lng = +data.lng;
 
 
       if(data.kmRange)this.range = data.kmRange;
@@ -86,15 +95,20 @@ export class SearchResultComponent implements OnInit {
           q2 = ref => ref.where('free', '==', true);
 
         }
-
-        if(this.dateSelected)salons = this.geo.collection(this.searchData, "subcol", q1, q2);
+        if(this.searchData){
+          if(this.dateSelected)salons = this.geo.collection(this.searchData, "subcol", q1, q2);
+          else {
+            let q1 = ref => ref.where('services', "array-contains", this.searchData);
+            salons = this.geo.collection('salons', "collection", q1);
+          }
+        }
         else {
-          let q1 = ref => ref.where('services', "array-contains", this.searchData);
-          salons = this.geo.collection('salons', "collection", q1);
+          alert("got to pick a service");
         }
 
-
-        const center = this.geo.point(this.lat, this.lng);
+        let lat = this.currentLat ? this.currentLat : this.lat;
+        let lng = this.currentLng ? this.currentLng : this.lng;
+        const center = this.geo.point(lat, lng);
         let defaultRadius = 10;
         const field = 'position';
 
@@ -154,10 +168,34 @@ export class SearchResultComponent implements OnInit {
     if(this.selectedLocation)obiect.selectedLocation = this.selectedLocation;
     if(this.dateSelected)obiect.dateChoosen = this.changeDate();
     if(this.range)obiect.kmRange = this.range;
-    if(this.lat)obiect.lat = this.lat;
-    if(this.lng)obiect.lng = this.lng;
+    if(this.lat)obiect.lat = this.currentLat ? this.currentLat : this.lat;
+    if(this.lng)obiect.lng =  this.currentLng ? this.currentLng : this.lng;
+    if(this.range)obiect.range = this.range;
 
     this.router.navigate(['.'], { relativeTo: this.route, queryParams: { ...this.route.snapshot.queryParams, ...obiect}});
   }
 
+  public zoomChange(zoom:number){
+    this.zoom = zoom;
+  }
+
+  public centerChange(centerChanged){
+
+    if(!this.showSearchHereButton){
+      this.map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(document.getElementById('searchHere'));
+      this.showSearchHereButton = true;
+    }
+
+    this.currentLat = centerChanged.lat;
+    this.currentLng = centerChanged.lng;
+
+  }
+
+  mapReady(event: any) {
+    this.currentLat = this.lat;
+    this.currentLng = this.lng;
+    this.map = event;
+
+    
+}
 }

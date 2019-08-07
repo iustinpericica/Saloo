@@ -6,6 +6,10 @@ import { User } from '../models/user';
 import {Location, Appearance} from '@angular-material-extensions/google-maps-autocomplete';
 import PlaceResult = google.maps.places.PlaceResult;
 import { Router } from '@angular/router';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
+import { FormControl } from '@angular/forms';
+import { startWith, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-home',
@@ -21,15 +25,20 @@ export class HomePage implements OnInit{
   public currentSelectedGeolocation:any= new Object();
   public dateChoosen: string;
   public kmRange:number;
+  public test;
+  options: string[] = [];
+  filteredOptions: Observable<string[]>;
+  myControl = new FormControl();
   
-  constructor(private store: Store<fromState.AppState>, private router: Router) {}
+  constructor(private store: Store<fromState.AppState>, private router: Router, private afStore: AngularFirestore) {}
 
   public appearance = Appearance;
   public zoom: number;
-  public latitude: number;
+  public latitude: number = null;
   public longitude: number;
   public selectedAddress: PlaceResult;
   public showMap: boolean = false;
+  public location:string = null;
 
 
   slideOpts = {
@@ -54,16 +63,24 @@ export class HomePage implements OnInit{
       options:[5, 7, 8],
       name : "B"
     }
-  ]
+  ];
+
+  private _filter(value: string): string[] {
+    const filterValue = value.toLowerCase();
+
+    return this.options.filter(option => option.toLowerCase().includes(filterValue));
+  }
 
   public ngOnInit():void{
 
+    this.filteredOptions = this.myControl.valueChanges
+      .pipe(
+        startWith(''),
+        map(value => this._filter(value))
+      );
 
     this.zoom = 10;
-    this.latitude = 52.520008;
-    this.longitude = 13.404954;
-
-    this.setCurrentPosition();
+    //this.setCurrentPosition();
 
 
     this.store.select(fromState.selectUserComplexData).subscribe(data => {
@@ -72,6 +89,28 @@ export class HomePage implements OnInit{
     this.store.select(fromState.selectUserLoggedIn).subscribe(data => {
       this.isLoggedIn = data;
     });
+
+    this.afStore.collection('dataToBeQueried').doc('searchInput').valueChanges().subscribe((data:any) => {
+
+      
+      for(let salon of data.salons){
+        this.options.push('Salon: ' + salon);
+      }
+
+
+
+      for(let service of data.services){
+        this.options.push('Serviciu: ' + service);
+      }
+
+
+
+      for(let worker of data.workers){
+        this.options.push('Stilist: ' + worker);
+      }
+
+    })
+
   }
 
   public changeDate(event){
@@ -97,8 +136,9 @@ export class HomePage implements OnInit{
   private setCurrentPosition() {
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition((position) => {
-        this.latitude = position.coords.latitude;
-        this.longitude = position.coords.longitude;
+        console.log(position);
+        this.currentSelectedGeolocation.lat = position.coords.latitude;
+        this.currentSelectedGeolocation.lng = position.coords.longitude;
         this.zoom = 12;
       });
     }
@@ -108,6 +148,10 @@ export class HomePage implements OnInit{
     console.log(this.searchData, this.currentSelectedPlace, this.dateChoosen, this.kmRange);
     let obiect:any = {};
     if(this.searchData)obiect.searchData = this.searchData;
+    else {
+      alert("got to pick a service");
+      return;
+    }
     if(this.currentSelectedPlace)obiect.selectedLocation = this.currentSelectedPlace;
     if(this.dateChoosen)obiect.dateChoosen = this.dateChoosen;
     if(this.kmRange)obiect.kmRange = this.kmRange;
@@ -128,6 +172,17 @@ export class HomePage implements OnInit{
     }
 
     return value;
+  }
+
+  public clickedSearchOption(option:string){
+
+    let split1 = option.split(':')[0];
+    console.log(split1);
+    if(split1 == 'Salon')this.router.navigate([`/home/salon/${option.split(':')[1].trim()}`]);
+    // mai trebuie facut pentru stilit
+    return;
+
+
   }
 
 }

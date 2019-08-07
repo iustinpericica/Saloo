@@ -23,7 +23,29 @@
 
       <p>Ce</p>
 
-      <ion-searchbar animated [(ngModel)] = "searchData"></ion-searchbar>
+
+      <form class="example-form" class = "whatSearch questionMarker">
+        <mat-form-field class="example-full-width">
+          <input type="text" placeholder="Pick one" aria-label="Number" matInput [formControl]="myControl" [matAutocomplete]="auto" [(ngModel)] = "searchData">
+          <mat-autocomplete #auto="matAutocomplete">
+            <mat-option *ngFor="let option of filteredOptions | async" [value]="option.split(':')[1].trim()" (click) = "clickedSearchOption(option)">
+              {{option}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </form>
+
+
+      
+      <p>Când</p>
+
+      <ion-item lines = "none" class = "questionMarker whatSearch">
+        <mat-form-field class="example-full-width">
+          <input matInput [matDatepicker]="picker" [min]="minDate" ngModel (ngModelChange) = "changeDate($event)" placeholder="Choose a date">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker touchUi #picker></mat-datepicker>
+        </mat-form-field>
+      </ion-item>
 
       <p>Unde</p>
 
@@ -34,48 +56,41 @@
 
 
       <div class="container" fxLayout="column" fxLayoutAlign="center">
- 
-        <mat-checkbox
-          [(ngModel)]="showMap"
-          [labelPosition]="before"
-          >
+
+        <ion-item lines = "none" class = "questionMarker whatSearch">
+          <mat-form-field>
+            <input matInput
+                matGoogleMapsAutocomplete
+                country="ro"
+                [(ngModel)] = "location"
+                (onAutocompleteSelected)="onAutocompleteSelected($event)"
+                (onLocationSelected)="onLocationSelected($event)"
+                placeholder="Choose a location"
+                >
+          </mat-form-field>
+        </ion-item>
+
+        <p *ngIf = "currentSelectedPlace">Distanta maxima de la locul ales la saloane</p>
+        <ion-item *ngIf = "currentSelectedPlace">
+          <ion-range min="2" max="20" step="2" pin="true" [(ngModel)] = "kmRange">
+            <ion-icon size="small" slot="start" name="compass"></ion-icon>
+          </ion-range>
+        </ion-item>
+
+        <br/>
+      <mat-checkbox [(ngModel)]="showMap" [labelPosition]="before" *ngIf = "location">
         Show map
-      </mat-checkbox>
+     </mat-checkbox>
 
-      <ion-item>
-        <ion-range min="2" max="20" step="2" pin="true" [(ngModel)] = "kmRange">
-          <ion-icon size="small" slot="start" name="compass"></ion-icon>
-        </ion-range>
-      </ion-item>
+      <div fxFlex *ngIf = "showMap">
+        <agm-map [latitude]="currentSelectedGeolocation.lat" [longitude]="currentSelectedGeolocation.lng" [scrollwheel]="false" [zoom]="zoom">
+          <agm-marker [latitude]="currentSelectedGeolocation.lat" [longitude]="currentSelectedGeolocation.lng"></agm-marker>
+        </agm-map>
+      </div>
 
-        <div fxFlex *ngIf = "showMap">
-          <agm-map [latitude]="latitude" [longitude]="longitude" [scrollwheel]="false" [zoom]="zoom">
-            <agm-marker [latitude]="latitude" [longitude]="longitude"></agm-marker>
-          </agm-map>
-        </div>
-
-        
-     
-        <div fxFlex fxFlexAlign="center"
-             class="autocomplete-container">
-             <mat-google-maps-autocomplete [appearance]="appearance.OUTLINE"
-             (onAutocompleteSelected)="onAutocompleteSelected($event)"
-             (onLocationSelected)="onLocationSelected($event)">
-            </mat-google-maps-autocomplete>
-        </div>
      
       </div>
 
-
-      <p>Când</p>
-
-      <ion-item lines = "full" class = "questionMarker">
-        <mat-form-field class="example-full-width">
-          <input matInput [matDatepicker]="picker" [min]="minDate" ngModel (ngModelChange) = "changeDate($event)" placeholder="Choose a date">
-          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-datepicker touchUi #picker></mat-datepicker>
-        </mat-form-field>
-      </ion-item>
 
       <ion-button shape="round" fill="outline" color = "primary" (click) = "search()">Caută</ion-button>
 

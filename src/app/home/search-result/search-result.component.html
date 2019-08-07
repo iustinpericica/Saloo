@@ -41,15 +41,15 @@
         </ion-col>
 
         <ion-col>
-          <ion-button fill = "outline">
+          <ion-button fill = "outline"  (click) = "showMap = !showMap">
             <ion-icon name="map"></ion-icon>
-            Arată harta
+            Arată harta 
           </ion-button>
         </ion-col>
       </ion-row>
   </ion-grid>
   <ion-item>
-    <ion-range min="2" max="20" step="2" pin="true" [(ngModel)] = "range">
+    <ion-range min="1" max="20" step="1" pin="true" [(ngModel)] = "range">
       {{range }}km<ion-icon size="small" slot="start" name="compass"></ion-icon>
     </ion-range>
   </ion-item>
@@ -75,7 +75,7 @@
     </ion-item>   
   </ion-list>
 
-  <div *ngIf = "dataLoaded" id = "mainWrapper">
+  <div *ngIf = "dataLoaded && !showMap" class = "mainWrapper">
     <div class="box" *ngFor = "let salon of salonsFetched">
       <ion-grid class="row-eq-height">
         <ion-row align-items-stretch>
@@ -122,5 +122,68 @@
         </ion-row>
       </ion-grid>
     </div>
+  </div>
+
+  <div *ngIf = "showMap && dataLoaded">
+
+      <agm-map [latitude]="lat" [longitude]="lng" [zoom]="zoom" (zoomChange) = "zoomChange($event)" (centerChange) = "centerChange($event)" (mapReady)="mapReady($event)">
+          <ion-button id = "searchHere" (click) = "updateSearch()">Caută aici</ion-button>
+
+          <agm-marker *ngFor = "let salon of  salonsFetched" [latitude]="salon.position.geopoint.latitude" [longitude]="salon.position.geopoint.longitude" (markerClick) = "salonSelected = salon">
+
+          </agm-marker>
+
+          <agm-circle [latitude]="currentLat" [longitude]="currentLng" [radius]="range* 1000"></agm-circle>
+      </agm-map>
+      
+      <div *ngIf = "salonSelected" class = "mainWrapper">
+        <div class="box">
+            <ion-grid class="row-eq-height">
+              <ion-row align-items-stretch>
+                <ion-col size = "4" align-self-stretch  (click) = "goToSalon(salon.salonName)">
+                  <a class="firstPartImage">
+                    
+                  </a>
+                </ion-col>
+                <ion-col align-self-stretch size = "8" class = "secondPartWrapper">
+      
+      
+                  <ion-row>
+                    <ion-col size = "10">
+                      <h5>{{salonSelected.salonName}}</h5>
+                      <star-rating value="3.6" checkedcolor="blue" uncheckedcolor="black" size="12px" readonly="true" (rate)="onRate($event)">
+      
+                      </star-rating>
+                      
+                      <p><ion-icon name="pin"></ion-icon> {{salonSelected.street}}, la {{salonSelected?.queryMetadata?.distance | number : '1.2-2'}} km de adresa introdusă</p>
+      
+                    </ion-col>
+                    <ion-col size = "2">
+                      <ion-icon name="heart"></ion-icon>
+                    </ion-col>
+                  </ion-row>
+      
+                  <ion-row>
+                    <ion-col size = "2">
+      
+                    </ion-col>
+                    <ion-col size = "10" class="priceInfo">
+                      <p>{{salonSelected.duration}}</p>
+                      <p>RON {{salonSelected.price}}</p>
+                    </ion-col>
+                  </ion-row>
+      
+                  <ion-row class="appointmentInfo">
+                    <ion-col size = "12">
+                      <ion-button size = "medium" (click) = "book(salonSelected.salonName)">Vezi locuri libere pe {{queryData}}</ion-button>
+                    </ion-col>
+                  </ion-row>
+      
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </div>
+        </div>
+
   </div>
 </ion-content>

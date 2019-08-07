@@ -4,7 +4,12 @@ ion-content{
         height:50px !important;
     }
 
-    #mainWrapper{
+
+    agm-map {
+        height: 300px;
+      }
+
+    .mainWrapper{
         background-color:white;
         margin-top:20px;
         .box{

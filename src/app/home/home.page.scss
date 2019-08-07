@@ -9,7 +9,23 @@ ion-content{
     width: 300px;
   }
   
-  
+  .whatSearch{
+
+    width:80% !important;
+    margin:auto;
+    mat-form-field{
+      width:100% !important;
+
+      mat-autocomplete{
+        width:100% !important;
+
+      }
+
+      input{
+        width:100% !important;
+      }
+    }
+  }
   
   .scrolling-wrapper {
     overflow-x: scroll;
