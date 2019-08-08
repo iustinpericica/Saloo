@@ -3,6 +3,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgxGalleryOptions, NgxGalleryImage, NgxGalleryAnimation } from 'ngx-gallery';
 import { AngularFirestore } from '@angular/fire/firestore';
 
+
+
+
 @Component({
   selector: 'app-salon',
   templateUrl: './salon.component.html',
@@ -22,6 +25,7 @@ export class SalonComponent implements OnInit {
 
 
   constructor(private activatedRoute: ActivatedRoute, private afStore: AngularFirestore, private router: Router) { 
+
   }
 
   public book(info){

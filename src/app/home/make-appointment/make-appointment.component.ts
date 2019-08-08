@@ -27,6 +27,7 @@ export class MakeAppointmentComponent implements OnInit {
   public duration;
   public problemWithWorker:boolean = false;
   public selectedStylist:string;
+  public servicesAvailable;
 
   constructor(private activatedRoute: ActivatedRoute, private afStore: AngularFirestore, private router: Router, public alertController: AlertController, public functions: AngularFireFunctions) { 
     this.salonName = this.activatedRoute.snapshot.params.salonName;
@@ -77,10 +78,12 @@ export class MakeAppointmentComponent implements OnInit {
       });
     });
 
-    this.afStore.collection('salons').doc(this.salonName).valueChanges().subscribe(data => {
+    this.afStore.collection('salons').doc(this.salonName).valueChanges().subscribe((data:any) => {
 
       this.salonInfo = data;
       this.dataLoaded = true;
+      this.servicesAvailable = data.services;
+      
     
     })
    }
@@ -94,7 +97,7 @@ export class MakeAppointmentComponent implements OnInit {
         this.problemWithWorker = false;
           for(let interval of data.schedule){
             let intervalMini = interval.split('^');
-            console.log(Math.floor(this.transformTimeToMinutes(+intervalMini[0])), this.transformTimeToMinutes(+intervalMini[1]), duration);
+            //console.log(Math.floor(this.transformTimeToMinutes(+intervalMini[0])), this.transformTimeToMinutes(+intervalMini[1]), duration);
             for(let start = Math.floor(this.transformTimeToMinutes(+intervalMini[0]));start<=Math.floor(this.transformTimeToMinutes(+intervalMini[1]) - duration);start+=duration){
       
               //console.log(start);
@@ -182,6 +185,11 @@ export class MakeAppointmentComponent implements OnInit {
     this.selectedStylist = worker;
     this.fetchSlots();
 
+  }
+
+  public changeServiceSelected(service){
+    this.selectedService = service;
+    this.fetchSlots();
   }
 
 

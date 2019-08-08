@@ -11,12 +11,20 @@
 
   <ion-content *ngIf = "dataLoaded && !error">
 
-    <ion-item>
-      <ion-label>Serviciul ales</ion-label>
-      <ion-input [(ngModel)] = "selectedService" [disabled] = "locked"></ion-input>
-      <ion-icon name="unlock" *ngIf = "locked" slot = "end" (click) = "locked = !locked"></ion-icon>
-      <ion-icon name="lock" *ngIf = "!locked" slot = "end" (click) = "locked = !locked"></ion-icon>
-    </ion-item>
+    <ion-list>
+      <ion-radio-group [(ngModel)] = "selectedService" (ionChange) = "changeServiceSelected($event.detail.value)">
+        <ion-list-header>
+          <ion-label>Serviciul ales</ion-label>
+        </ion-list-header>
+    
+        <ion-item *ngFor = "let service of servicesAvailable">
+          <ion-label>{{service}}</ion-label>
+          <ion-radio slot="start" value="{{service}}"></ion-radio>
+        </ion-item>
+    
+
+      </ion-radio-group>
+    </ion-list>
 
     <ion-list>
         <ion-radio-group [(ngModel)] = "selectedStylist" (ionChange) = "changeWorkerSelected($event.detail.value)">
@@ -31,7 +39,7 @@
       
 
         </ion-radio-group>
-      </ion-list>
+    </ion-list>
 
 
     <mat-form-field class="example-full-width">

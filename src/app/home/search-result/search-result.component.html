@@ -19,7 +19,7 @@
   <ion-grid>
     <ion-row>
         <ion-col size="9" style="padding-right:0;" class="fromSearch">
-          <ion-searchbar style="padding-right:0;" [(ngModel)] = "searchData"></ion-searchbar>
+          <ion-searchbar style="padding-right:0;" [(ngModel)] = "searchData" (ionChange) = "try()"></ion-searchbar>
         </ion-col>
         <ion-col style="padding-left:0;" class="fromSearch">
         </ion-col>
@@ -29,9 +29,9 @@
         <ion-col>
           <ion-item lines = "full" class = "questionMarker">
             <mat-form-field class="example-full-width">
-              <input matInput [matDatepicker]="picker" [min]="minDate" [(ngModel)] = "dateSelected" placeholder="Choose a date">
+              <input matInput [matDatepicker]="picker" [min]="minDate" [(ngModel)] = "dateSelected" (ngModelChange) = "try()" placeholder="Choose a date">
               <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-              <mat-datepicker touchUi #picker></mat-datepicker>
+              <mat-datepicker touchUi #picker ></mat-datepicker>
             </mat-form-field>
           </ion-item>
         </ion-col>
@@ -43,17 +43,16 @@
         <ion-col>
           <ion-button fill = "outline"  (click) = "showMap = !showMap">
             <ion-icon name="map"></ion-icon>
-            Arată harta 
+            {{!showMap ? 'Arată harta ' : 'Ascunde harta'}}
           </ion-button>
         </ion-col>
       </ion-row>
   </ion-grid>
-  <ion-item>
+  <!-- <ion-item>
     <ion-range min="1" max="20" step="1" pin="true" [(ngModel)] = "range">
       {{range }}km<ion-icon size="small" slot="start" name="compass"></ion-icon>
     </ion-range>
-  </ion-item>
-  <ion-button style="padding-left:0;" (click) = "try()">Search</ion-button>
+  </ion-item> -->
 </div>
 <ion-content>
   <ion-list *ngIf = "!dataLoaded">
@@ -94,7 +93,7 @@
 
                 </star-rating>
                 
-                <p><ion-icon name="pin"></ion-icon> {{salon.street}}, la {{salon?.queryMetadata?.distance | number : '1.2-2'}} km de adresa introdusă</p>
+                <p><ion-icon name="pin"></ion-icon> {{salon.street + ', '}} la {{salon?.queryMetadata?.distance | number : '1.2-2'}} km de adresa introdusă</p>
 
               </ion-col>
               <ion-col size = "2">
@@ -107,14 +106,14 @@
 
               </ion-col>
               <ion-col size = "10" class="priceInfo">
-                <p>{{salon.duration}}</p>
-                <p>RON {{salon.price}}</p>
+                <p>{{salon.servicesSoloInfo[searchData].duration}} min</p>
+                <p>RON {{salon.servicesSoloInfo[searchData].price}}</p>
               </ion-col>
             </ion-row>
 
             <ion-row class="appointmentInfo">
               <ion-col size = "12">
-                <ion-button size = "medium" (click) = "book(salon.salonName)">Vezi locuri libere pe {{queryData}}</ion-button>
+                <ion-button size = "medium" (click) = "book(salon.salonName)">Vezi locuri libere pentru {{searchData}}</ion-button>
               </ion-col>
             </ion-row>
 
@@ -126,14 +125,18 @@
 
   <div *ngIf = "showMap && dataLoaded">
 
-      <agm-map [latitude]="lat" [longitude]="lng" [zoom]="zoom" (zoomChange) = "zoomChange($event)" (centerChange) = "centerChange($event)" (mapReady)="mapReady($event)">
+      <ion-progress-bar type="indeterminate" *ngIf = "queryStatus == 1"></ion-progress-bar>
+
+      <agm-map [latitude]="lat" [longitude]="lng" [zoom]="zoom" (zoomChange) = "zoomChange($event)" (centerChange) = "centerChange($event)" 
+      (mapReady)="mapReady($event)"
+      (boundsChange) = "boundsChange($event)"
+      >
           <ion-button id = "searchHere" (click) = "updateSearch()">Caută aici</ion-button>
 
           <agm-marker *ngFor = "let salon of  salonsFetched" [latitude]="salon.position.geopoint.latitude" [longitude]="salon.position.geopoint.longitude" (markerClick) = "salonSelected = salon">
 
           </agm-marker>
 
-          <agm-circle [latitude]="currentLat" [longitude]="currentLng" [radius]="range* 1000"></agm-circle>
       </agm-map>
       
       <div *ngIf = "salonSelected" class = "mainWrapper">
@@ -155,7 +158,7 @@
       
                       </star-rating>
                       
-                      <p><ion-icon name="pin"></ion-icon> {{salonSelected.street}}, la {{salonSelected?.queryMetadata?.distance | number : '1.2-2'}} km de adresa introdusă</p>
+                      <p><ion-icon name="pin"></ion-icon> {{salonSelected.street + ', '}} la {{salonSelected?.queryMetadata?.distance | number : '1.2-2'}} km de adresa introdusă</p>
       
                     </ion-col>
                     <ion-col size = "2">
@@ -168,14 +171,14 @@
       
                     </ion-col>
                     <ion-col size = "10" class="priceInfo">
-                      <p>{{salonSelected.duration}}</p>
+                      <p>{{salonSelected.duration}} min</p>
                       <p>RON {{salonSelected.price}}</p>
                     </ion-col>
                   </ion-row>
       
                   <ion-row class="appointmentInfo">
                     <ion-col size = "12">
-                      <ion-button size = "medium" (click) = "book(salonSelected.salonName)">Vezi locuri libere pe {{queryData}}</ion-button>
+                      <ion-button size = "medium" (click) = "book(salonSelected.salonName)">Vezi locuri libere pentru {{searchData}}</ion-button>
                     </ion-col>
                   </ion-row>
       

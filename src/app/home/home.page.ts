@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import * as fromActions from '../state/app.actions';
 import * as fromState from '../state/index';
 import { Store } from '@ngrx/store';
 import { User } from '../models/user';
@@ -10,6 +9,8 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { startWith, map } from 'rxjs/operators';
+
+declare const google: any;
 
 @Component({
   selector: 'app-home',
@@ -30,7 +31,9 @@ export class HomePage implements OnInit{
   filteredOptions: Observable<string[]>;
   myControl = new FormControl();
   
-  constructor(private store: Store<fromState.AppState>, private router: Router, private afStore: AngularFirestore) {}
+  constructor(private store: Store<fromState.AppState>, private router: Router, private afStore: AngularFirestore) {
+   
+  }
 
   public appearance = Appearance;
   public zoom: number;
@@ -85,7 +88,7 @@ export class HomePage implements OnInit{
 
     this.store.select(fromState.selectUserComplexData).subscribe(data => {
       this.userData = data;
-    });
+    }); 
     this.store.select(fromState.selectUserLoggedIn).subscribe(data => {
       this.isLoggedIn = data;
     });
@@ -134,14 +137,30 @@ export class HomePage implements OnInit{
   }
 
   private setCurrentPosition() {
-    if ('geolocation' in navigator) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        console.log(position);
-        this.currentSelectedGeolocation.lat = position.coords.latitude;
-        this.currentSelectedGeolocation.lng = position.coords.longitude;
-        this.zoom = 12;
+
+    if (navigator.geolocation) {
+      this.zoom = 12;
+      navigator.geolocation.getCurrentPosition(function(position) {
+
+        var geolocation = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+        var circle = new google.maps.Circle({
+          center: geolocation,
+          radius: position.coords.accuracy
+        });
+
+        let input:any = window.document.getElementById('autocomplete');
+        let autocomplete = new google.maps.places.Autocomplete(
+          input,
+          {types: ['geocode']});
+
+        autocomplete.setBounds(circle.getBounds());
       });
     }
+
+
   }
 
   public search():void{

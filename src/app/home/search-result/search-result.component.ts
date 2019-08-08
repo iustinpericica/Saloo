@@ -1,13 +1,12 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import {Location, Appearance} from '@angular-material-extensions/google-maps-autocomplete';
-import * as firebase from 'firebase/app';
+import {Appearance} from '@angular-material-extensions/google-maps-autocomplete';
 import { FirebaseApp } from '@angular/fire';
 import * as geofirex from 'geofirex';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { formatDate } from '@angular/common';
-import { Observable, Subscription } from 'rxjs';
-import { SalonInterface } from 'src/app/models/salons';
+import { Subscription } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+
 
 declare const google: any;
 
@@ -36,6 +35,7 @@ export class SearchResultComponent implements OnInit {
   public salonSelected:string = null;
   public currentLat:number;
   public currentLng:number;
+  public queryStatus:number; // 1 = sending, 2 = received, 3 = error;
   
 
   public book(salonName:string){
@@ -49,7 +49,6 @@ export class SearchResultComponent implements OnInit {
   }
 
   constructor(private router: Router, private route: ActivatedRoute, private afStore: AngularFirestore, @Inject(FirebaseApp) firebaseApp: any) {
-    
 
     this.geo = geofirex.init(firebaseApp);
     this.route.queryParams.subscribe(data => {
@@ -78,11 +77,12 @@ export class SearchResultComponent implements OnInit {
 
       this.updateSearch();
     })
+
   }
 
   public updateSearch(){
     if(this.query)this.query.unsubscribe();
-
+    this.queryStatus = 1;
     if(this.lat && this.lng){
       // First case if i have the geolocation then split into having date and not having date
         let salons;
@@ -114,12 +114,21 @@ export class SearchResultComponent implements OnInit {
 
         if(this.range)defaultRadius = this.range;
 
-
+        console.log(this.searchData + ' ' + lat + ' ' + lng);
+        
         let queryLocal = salons.within(center, defaultRadius, field);
-        this.query = queryLocal.subscribe(data => {
+        this.query = queryLocal.pipe(
+          catchError(data => {
+            this.queryStatus = 3;
+            return data;
+          })
+        ). subscribe(data => {
+          console.log(data);
+          if(!data)this.queryStatus = 3;
+          else this.queryStatus = 2;
           this.dataLoaded = true;
           this.salonsFetched = data;
-          console.log(data)
+          
         });
 
 
@@ -137,12 +146,18 @@ export class SearchResultComponent implements OnInit {
 
         else salons = this.afStore.collection('salons', ref => ref.where('services', "array-contains", this.searchData)).valueChanges();
 
-        this.query = salons.subscribe(data => {
+        this.query = salons.pipe(
+          catchError(data => {
+            this.queryStatus = 3;
+            return data;
+          })
+        ). subscribe(data => {
+          console.log(data);
+          if(!data)this.queryStatus = 3;
+          else this.queryStatus = 2;
           this.dataLoaded = true;
           this.salonsFetched = data;
-          for(let point of data){
-            console.log(point);
-          }
+          
         });
 
     }
@@ -198,4 +213,14 @@ export class SearchResultComponent implements OnInit {
 
     
 }
+  public boundsChange(bounds){
+    let cornerLat = bounds.na.j;
+    let cornerLng = bounds.ia.j;
+    let centerLat = this.currentLat;
+    let centerLng = this.currentLng;
+    let center = this.geo.point(cornerLat, cornerLng);
+    let distanceKm = center.distance(centerLat, centerLng);
+    this.range = distanceKm;
+  }
+
 }

@@ -26,7 +26,7 @@
 
       <form class="example-form" class = "whatSearch questionMarker">
         <mat-form-field class="example-full-width">
-          <input type="text" placeholder="Pick one" aria-label="Number" matInput [formControl]="myControl" [matAutocomplete]="auto" [(ngModel)] = "searchData">
+          <input type="text" placeholder="Pick one" aria-label="Number" matInput [formControl]="myControl" id = "autocomplete" [matAutocomplete]="auto" [(ngModel)] = "searchData">
           <mat-autocomplete #auto="matAutocomplete">
             <mat-option *ngFor="let option of filteredOptions | async" [value]="option.split(':')[1].trim()" (click) = "clickedSearchOption(option)">
               {{option}}
@@ -66,6 +66,7 @@
                 (onAutocompleteSelected)="onAutocompleteSelected($event)"
                 (onLocationSelected)="onLocationSelected($event)"
                 placeholder="Choose a location"
+                id = "ceva"
                 >
           </mat-form-field>
         </ion-item>
@@ -88,7 +89,6 @@
         </agm-map>
       </div>
 
-     
       </div>
 
 
