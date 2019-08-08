@@ -207,6 +207,7 @@ export class SearchResultComponent implements OnInit {
   }
 
   mapReady(event: any) {
+    this.showSearchHereButton = false;
     this.currentLat = this.lat;
     this.currentLng = this.lng;
     this.map = event;
@@ -214,6 +215,7 @@ export class SearchResultComponent implements OnInit {
     
 }
   public boundsChange(bounds){
+
     let cornerLat = bounds.na.j;
     let cornerLng = bounds.ia.j;
     let centerLat = this.currentLat;
