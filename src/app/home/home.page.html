@@ -6,8 +6,11 @@
     <ion-title>
       Saloo
     </ion-title>
-    <ion-button shape = "round" fill = "none" slot = "end"><ion-icon name="notifications-outline"></ion-icon></ion-button>
-    <ion-button shape = "round" fill = "none" slot = "end"><ion-icon name="more"></ion-icon></ion-button>
+    <ion-item slot = "end" lines = "none"> 
+        <ion-button shape = "round" fill = "none" ><ion-icon name="notifications-outline"></ion-icon></ion-button>
+        <ion-button shape = "round" fill = "none" (click) = "presentPopover($event)"><ion-icon name="more"></ion-icon></ion-button>
+    </ion-item>
+
   </ion-toolbar>
 </ion-header>
 
@@ -71,7 +74,7 @@
           </mat-form-field>
         </ion-item>
 
-        <p *ngIf = "currentSelectedPlace">Distanta maxima de la locul ales la saloane</p>
+        <p *ngIf = "currentSelectedPlace">Distanta maxima de la locul ales la saloane in km</p>
         <ion-item *ngIf = "currentSelectedPlace">
           <ion-range min="2" max="20" step="2" pin="true" [(ngModel)] = "kmRange">
             <ion-icon size="small" slot="start" name="compass"></ion-icon>
@@ -85,7 +88,7 @@
 
       <div fxFlex *ngIf = "showMap">
         <agm-map [latitude]="currentSelectedGeolocation.lat" [longitude]="currentSelectedGeolocation.lng" [scrollwheel]="false" [zoom]="zoom">
-          <agm-marker [latitude]="currentSelectedGeolocation.lat" [longitude]="currentSelectedGeolocation.lng"></agm-marker>
+          <agm-circle [latitude]="currentSelectedGeolocation.lat" [longitude]="currentSelectedGeolocation.lng" [radius] = "kmRange * 1000"></agm-circle>
         </agm-map>
       </div>
 

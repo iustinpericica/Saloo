@@ -5,6 +5,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { Store } from '@ngrx/store';
 import { AppState, selectUserBasicData } from 'src/app/state';
 import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -18,13 +19,20 @@ export class AppointmentsComponent implements OnInit {
   public appointments:Array<any>;
   public uid:string;
   public subscribtion: Subscription;
+  public authenticated:boolean;
 
-  constructor(private _location: Location, private afStore: AngularFirestore, private store: Store<AppState>) { }
+  constructor(private _location: Location, private afStore: AngularFirestore, private store: Store<AppState>, private router: Router) { }
 
   ngOnInit() {
     this.store.select(selectUserBasicData).subscribe(data => {
-      if(data)this.uid = data.uid;
-      else return;
+      if(data){
+        this.uid = data.uid;
+        this.authenticated = true;
+      }
+      else {
+        this.authenticated = false;
+        return;
+      }
       this.getNextAppointments();
     });
 
@@ -47,6 +55,7 @@ export class AppointmentsComponent implements OnInit {
   }
 
   backClicked():void{
+    // CA PE STYLESEET FUCK OFF
     this._location.back();
   }
 
@@ -55,6 +64,10 @@ export class AppointmentsComponent implements OnInit {
     this.segmentSelected = event.detail.value;
     this.getNextAppointments();
 
+  }
+
+  public goToAuthenticatePage():void{
+    this.router.navigate(['/login']);
   }
 
 }

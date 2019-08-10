@@ -9,6 +9,8 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { startWith, map } from 'rxjs/operators';
+import { AlertController, PopoverController } from '@ionic/angular';
+import { LanguageAndCoinComponent } from './popover/language-and-coin/language-and-coin.component';
 
 declare const google: any;
 
@@ -25,13 +27,13 @@ export class HomePage implements OnInit{
   public currentSelectedPlace:string = null;
   public currentSelectedGeolocation:any= new Object();
   public dateChoosen: string;
-  public kmRange:number;
+  public kmRange:number = 10;
   public test;
   options: string[] = [];
   filteredOptions: Observable<string[]>;
   myControl = new FormControl();
   
-  constructor(private store: Store<fromState.AppState>, private router: Router, private afStore: AngularFirestore) {
+  constructor(private store: Store<fromState.AppState>, private router: Router, private afStore: AngularFirestore, public alertController: AlertController, public popoverController: PopoverController) {
    
   }
 
@@ -75,6 +77,7 @@ export class HomePage implements OnInit{
   }
 
   public ngOnInit():void{
+
 
     this.filteredOptions = this.myControl.valueChanges
       .pipe(
@@ -163,12 +166,26 @@ export class HomePage implements OnInit{
 
   }
 
+  async presentAlert(message:string) {
+    const alert = await this.alertController.create({
+      header: 'Atentie',
+      subHeader: 'Subtitle',
+      message: message,
+      buttons: ['OK']
+    });
+
+    await alert.present();
+  }
+
+
   public search():void{
-    console.log(this.searchData, this.currentSelectedPlace, this.dateChoosen, this.kmRange);
+    //console.log(this.searchData, this.currentSelectedPlace, this.dateChoosen, this.kmRange);
+    if(!this.searchData || !this.currentSelectedPlace){
+      this.presentAlert("Trebuie sa ai un serviciu si un loc selectat");
+    }
     let obiect:any = {};
     if(this.searchData)obiect.searchData = this.searchData;
     else {
-      alert("got to pick a service");
       return;
     }
     if(this.currentSelectedPlace)obiect.selectedLocation = this.currentSelectedPlace;
@@ -202,6 +219,15 @@ export class HomePage implements OnInit{
     return;
 
 
+  }
+
+  async presentPopover(ev: any) {
+    const popover = await this.popoverController.create({
+      component: LanguageAndCoinComponent,
+      event: ev,
+      translucent: true
+    });
+    return await popover.present();
   }
 
 }

@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { AlertController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
 import {AngularFireFunctions} from '@angular/fire/functions';
+import { AddServicePage } from './add-service/add-service.page';
 
 
 @Component({
@@ -28,8 +29,12 @@ export class MakeAppointmentComponent implements OnInit {
   public problemWithWorker:boolean = false;
   public selectedStylist:string;
   public servicesAvailable;
+  public daysWithDuration: any = new Object();
+  public servicesInfo:any;
+  public servicesUsed:Array<string> = new Array<string>();
 
-  constructor(private activatedRoute: ActivatedRoute, private afStore: AngularFirestore, private router: Router, public alertController: AlertController, public functions: AngularFireFunctions) { 
+  constructor(private activatedRoute: ActivatedRoute, private afStore: AngularFirestore, private router: Router, public alertController: AlertController
+    , public functions: AngularFireFunctions, public modalController: ModalController) { 
     this.salonName = this.activatedRoute.snapshot.params.salonName;
 
     this.activatedRoute.queryParams.subscribe(data => {
@@ -53,29 +58,34 @@ export class MakeAppointmentComponent implements OnInit {
       if(data.stylist){
         
         this.selectedStylist= data.stylist;
+
       }
-      let date = this.changeDate();
 
       
-      this.afStore.collection('salons').doc(this.salonName).collection('haircut').doc(date).valueChanges().subscribe((data:any) => {
-      if(data){
-          this.error = false;
-          this.salonSchedule = data.schedule;
-          this.workersAvailable = data.workers;
-          this.duration = data.duration;
+      if(this.queryData){
+        let date = this.changeDate();
+          this.afStore.collection('salons').doc(this.salonName).collection('haircut').doc(date).valueChanges().subscribe((data:any) => {
+          if(data){
+              
+              this.error = false;
+              this.salonSchedule = data.schedule;
+              this.workersAvailable = data.workers;
+              this.duration = data.duration;
 
-          
-          if(this.selectedStylist && this.queryData && this.selectedService){
+              
+              if(this.selectedStylist && this.queryData && this.selectedService){
 
-            this.fetchSlots();
+                this.fetchSlots();
+              }
+
+          } 
+        
+          else {
+            this.error = true;
           }
-
-      } 
-    
-      else {
-        this.error = true;
-      }
-      });
+          
+          });
+    }
     });
 
     this.afStore.collection('salons').doc(this.salonName).valueChanges().subscribe((data:any) => {
@@ -83,6 +93,13 @@ export class MakeAppointmentComponent implements OnInit {
       this.salonInfo = data;
       this.dataLoaded = true;
       this.servicesAvailable = data.services;
+      let employers:Array<string> = data.workers;
+      this.servicesInfo = data.servicesSoloInfo;
+      for(let employer of employers){
+        this.afStore.collection('workers').doc(employer).valueChanges().subscribe((data:any) => this.daysWithDuration[employer] = data.daysWithDuration);
+      }
+
+      this.getFirstDateViaWorker(this.selectedStylist);
       
     
     })
@@ -192,5 +209,35 @@ export class MakeAppointmentComponent implements OnInit {
     this.fetchSlots();
   }
 
+  
+  public getFirstDateViaWorker(worker:string):(string | null){
+    let minim = 20000;
+    let duration = this.servicesInfo[this.selectedService].duration;
+    let minDate:string = '9999.2019.2019';
+    console.dir(this.daysWithDuration);
+    console.log(worker);
+    Object.keys(this.daysWithDuration).forEach(key => console.log(key));
+    // Object.keys(this.daysWithDuration[worker]).forEach(val => {
+
+    //   if(this.daysWithDuration[worker][val] >= duration && val < minDate){
+    //     minim = this.daysWithDuration[worker][val];
+    //     minDate = val;
+    //   }
+
+    // });
+    return minDate != '9999.2019.2019' ? minDate : '';
+}
+
+  public async addService(){
+    const modal = await this.modalController.create({
+      component: AddServicePage,
+      componentProps: {
+        'salonInfo':this.salonInfo,
+        'servicesUsed':this.servicesUsed
+      }
+    });
+    return await modal.present();
+  }
+  
 
 }

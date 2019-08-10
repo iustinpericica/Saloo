@@ -24,3 +24,21 @@ export interface Geolocation{
     geopoint: GeoPoint;
 }
 
+export interface ServicesInfo{
+    duration:number;
+    price:number;
+    workers:Array<string>;
+}
+
+export interface SalonInfoInterface{
+    city:string;
+    position:Geolocation;
+    salonName:string;
+    services:Array<string>;
+    servicesInfo:Object;
+    servicesSoloInfo:ServicesInfo;
+    servicesTags:Array<string>;
+    workers:Array<string>;
+    
+}
+

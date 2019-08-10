@@ -17,6 +17,8 @@ import { SalonComponent } from './salon/salon.component';
 import { NgxGalleryModule } from 'ngx-gallery';
 import { MakeAppointmentComponent } from './make-appointment/make-appointment.component';
 import { AngularFireFunctions } from '@angular/fire/functions';
+import { LanguageAndCoinComponent } from './popover/language-and-coin/language-and-coin.component';
+import { AddServicePage } from './make-appointment/add-service/add-service.page';
 
 @NgModule({
   imports: [
@@ -50,10 +52,12 @@ import { AngularFireFunctions } from '@angular/fire/functions';
     RatingModule,
     NgxGalleryModule
   ],
-  declarations: [HomePage, HighlightPipe, SearchResultComponent, SalonComponent, MakeAppointmentComponent],
+  declarations: [HomePage, HighlightPipe, SearchResultComponent, SalonComponent, MakeAppointmentComponent, LanguageAndCoinComponent,
+    AddServicePage],
   providers: [
     { provide: HAMMER_GESTURE_CONFIG, useClass: GestureConfig },
     AngularFireFunctions
-  ]
+  ],
+  entryComponents:[LanguageAndCoinComponent, AddServicePage]
 })
 export class HomePageModule {}

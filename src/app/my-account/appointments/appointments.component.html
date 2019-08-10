@@ -7,7 +7,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content *ngIf = "authenticated">
 
   <!-- Segment with secondary color -->
   <ion-segment (ionChange)="segmentChanged($event)" color="secondary" value = "future">
@@ -53,6 +53,13 @@
   </ion-item>
   <ion-button expand="block" class = "comment" fill="outline">Rezervaţi din nou</ion-button>
 </ion-card>
+
+</ion-content>
+
+<ion-content *ngIf = "!authenticated">
+
+  <h3>Trebuie sa fii autentificat</h3>
+  <ion-button (click) = "goToAuthenticatePage()">Autentifica-te sau fa-ti un cont aici</ion-button>
 
 </ion-content>
 

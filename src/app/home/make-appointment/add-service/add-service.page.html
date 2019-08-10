@@ -1,0 +1,37 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Add Service</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismissModal()">Close</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+
+  <ion-item>
+    <ion-label>Alege un serviciu</ion-label>
+    <ion-select okText="Ok" cancelText="Anulează" [(ngModel)] = "serviceChoosen" (ionChange) = "test()">
+      <ion-select-option *ngFor = "let service of servicesThatCanBeUsed" [value]="service">{{service}}</ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <ion-item *ngIf = "serviceChoosen">
+    
+      <ion-label>Alege un stilist</ion-label>
+      <ion-select okText="Ok" cancelText="Anulează" [(ngModel)] = "stylistSelected">
+        <ion-select-option *ngFor = "let worker of salonInfo.servicesSoloInfo[serviceChoosen].workers" [value]="worker">{{worker}}</ion-select-option>
+      </ion-select>
+  </ion-item>
+<!-- 
+  <ion-item *ngIf = "serviceChoosen">
+      <ion-label>Alege Optiuni</ion-label>
+      <ion-select okText="Ok" cancelText="Anulează" [(ngModel)] = "stylistSelected">
+        <ion-select-option *ngFor = "let service of salonInfo.servicesSoloInfo[serviceChoosen]" value="service">{{service}}</ion-select-option>
+      </ion-select>
+  </ion-item> -->
+
+
+
+</ion-content>

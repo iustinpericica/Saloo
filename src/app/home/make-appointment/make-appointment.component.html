@@ -11,16 +11,38 @@
 
   <ion-content *ngIf = "dataLoaded && !error">
 
+    <ion-button expand="full" (click) = "addService()">
+      Adaugă un serviciu
+      <ion-icon slot="end" name="add-circle-outline"></ion-icon>
+    </ion-button>
+
     <ion-list>
       <ion-radio-group [(ngModel)] = "selectedService" (ionChange) = "changeServiceSelected($event.detail.value)">
         <ion-list-header>
-          <ion-label>Serviciul ales</ion-label>
+          <ion-label>Serviciile alese</ion-label>
         </ion-list-header>
     
         <ion-item *ngFor = "let service of servicesAvailable">
           <ion-label>{{service}}</ion-label>
           <ion-radio slot="start" value="{{service}}"></ion-radio>
         </ion-item>
+
+        <mat-accordion>
+
+          <mat-expansion-panel *ngFor = "let serviceChoosen of servicesUsed">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                {{serviceChoosen.name}}
+              </mat-panel-title>
+              <mat-panel-description>
+                
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <p>Stilist selectat: {{serviceChoosen.stylist}}</p>
+            <h5>Optiuni selectate</h5>
+            <p *ngFor = "let option of serviceChoosen.options">{{option}}</p>
+          </mat-expansion-panel>
+        </mat-accordion>
     
 
       </ion-radio-group>
@@ -47,8 +69,12 @@
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker touchUi #picker (selectedChanged)="onChangeTime()"></mat-datepicker>
     </mat-form-field>
+    
+    <p *ngIf = "!queryData">
+      <!-- Inca nu ai selectat nicio dată, incearcă pe <ion-button (click) = "changeDateTo(getFirstDateViaWorker(selectedStylist))">{{getFirstDateViaWorker(selectedStylist)}}</ion-button> -->
+    </p>
 
-    <h2>Program valabil</h2>
+    <h2 *ngIf = "slotsAvailable">Program valabil</h2>
     <ion-list>
       <ion-item *ngFor = "let slot of slotsAvailable">
         {{slot}}
