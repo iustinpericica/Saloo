@@ -14,16 +14,20 @@ export class AddServicePage implements OnInit {
   servicesThatCanBeUsed:Array<string>;
   public serviceChoosen:string;
   public stylistSelected:string;
-  public optionsSelected:Array<string>;
-  
+  public optionsSelected:Array<any>;
 
 
   constructor(public modalController: ModalController) { }
 
   ngOnInit() {
     console.log(this.salonInfo);
-    this.servicesThatCanBeUsed = this.salonInfo.services.filter(x => !this.servicesUsed.find(y => y.name == x));
+    this.servicesThatCanBeUsed = this.salonInfo.services.filter(x => !this.servicesUsed.find(y => y.serviceName == x));
   }
+
+  slideOpts = {
+    initialSlide: 1,
+    speed: 400
+  };
 
   dismissModal() {
     // using the injected ModalController this page
@@ -41,4 +45,16 @@ export class AddServicePage implements OnInit {
     console.log(this.salonInfo.servicesSoloInfo)
   }
 
+  selectsService(){
+
+    this.modalController.dismiss({
+      'dismissed': false,
+      'serviceChoosen':this.serviceChoosen,
+      'stylistSelected':this.stylistSelected,
+      'optionsSelected':this.optionsSelected
+    });
+
+  }
+
+ 
 }

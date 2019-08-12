@@ -22,7 +22,6 @@ export class MakeAppointmentComponent implements OnInit {
   public dateSelected:Date;
   public queryData:string;
   public salonSchedule;
-  public error:boolean =  false;
   public slotsAvailable:Array<string> = new Array<string>();
   public workersAvailable:Array<string>;
   public duration;
@@ -31,7 +30,15 @@ export class MakeAppointmentComponent implements OnInit {
   public servicesAvailable;
   public daysWithDuration: any = new Object();
   public servicesInfo:any;
-  public servicesUsed:Array<string> = new Array<string>();
+  public servicesUsed:Array<any> = new Array<any>();
+  public totalMoney:number = 0;
+  public totalDuration:number = 0;
+  public justOneStylist:boolean = false;
+  public mergedServicesByStylist:Array<any> = [];
+  public slotsForMergedServicesByStylist:Array<any>;
+  private slotsBKT:Array<string> = new Array('1', '2', '3', '4', '5', '6', '7', '8', '9');
+  public slotsConsecutive:Array<string[]>;
+  public slotsNotConsecutive:Array<string[]>;
 
   constructor(private activatedRoute: ActivatedRoute, private afStore: AngularFirestore, private router: Router, public alertController: AlertController
     , public functions: AngularFireFunctions, public modalController: ModalController) { 
@@ -51,41 +58,6 @@ export class MakeAppointmentComponent implements OnInit {
 
       }
 
-      if(data.service){
-        this.selectedService = data.service;
-      }
-
-      if(data.stylist){
-        
-        this.selectedStylist= data.stylist;
-
-      }
-
-      
-      if(this.queryData){
-        let date = this.changeDate();
-          this.afStore.collection('salons').doc(this.salonName).collection('haircut').doc(date).valueChanges().subscribe((data:any) => {
-          if(data){
-              
-              this.error = false;
-              this.salonSchedule = data.schedule;
-              this.workersAvailable = data.workers;
-              this.duration = data.duration;
-
-              
-              if(this.selectedStylist && this.queryData && this.selectedService){
-
-                this.fetchSlots();
-              }
-
-          } 
-        
-          else {
-            this.error = true;
-          }
-          
-          });
-    }
     });
 
     this.afStore.collection('salons').doc(this.salonName).valueChanges().subscribe((data:any) => {
@@ -98,26 +70,21 @@ export class MakeAppointmentComponent implements OnInit {
       for(let employer of employers){
         this.afStore.collection('workers').doc(employer).valueChanges().subscribe((data:any) => this.daysWithDuration[employer] = data.daysWithDuration);
       }
-
-      this.getFirstDateViaWorker(this.selectedStylist);
-      
     
     })
    }
 
      
-  private fetchSlots(){
+  private fetchSlots(duration){
     this.slotsAvailable = [];
-    this.afStore.collection('workers').doc(this.selectedStylist).collection('schedule').doc(this.queryData).valueChanges().subscribe((data:any) => {
+
+    this.afStore.collection('workers').doc(this.servicesUsed[0].stylistSelected).collection('schedule').doc(this.queryData).valueChanges().subscribe((data:any) => {
       if(data){
-        let duration = this.duration;
-        this.problemWithWorker = false;
+
           for(let interval of data.schedule){
+
             let intervalMini = interval.split('^');
-            //console.log(Math.floor(this.transformTimeToMinutes(+intervalMini[0])), this.transformTimeToMinutes(+intervalMini[1]), duration);
-            for(let start = Math.floor(this.transformTimeToMinutes(+intervalMini[0]));start<=Math.floor(this.transformTimeToMinutes(+intervalMini[1]) - duration);start+=duration){
-      
-              //console.log(start);
+            for(let start = Math.floor(this.transformTimeToMinutes(+intervalMini[0]));start<=Math.floor(this.transformTimeToMinutes(+intervalMini[1]) - duration);start+=this.salonInfo.stepForAppointments){
               let minutes = start - (Math.floor(start/60) * 60);
               let hours = Math.floor(start/60);
               let slotTobe = hours + ':';
@@ -129,10 +96,11 @@ export class MakeAppointmentComponent implements OnInit {
             }
           }
     }
-    else this.problemWithWorker = true;
-  })
+
+  });
 
   }
+
 
    public transformTimeToMinutes(time:number){
 
@@ -196,26 +164,12 @@ export class MakeAppointmentComponent implements OnInit {
     
   }
 
-
-  public changeWorkerSelected(worker){
-
-    this.selectedStylist = worker;
-    this.fetchSlots();
-
-  }
-
-  public changeServiceSelected(service){
-    this.selectedService = service;
-    this.fetchSlots();
-  }
-
   
   public getFirstDateViaWorker(worker:string):(string | null){
     let minim = 20000;
     let duration = this.servicesInfo[this.selectedService].duration;
     let minDate:string = '9999.2019.2019';
-    console.dir(this.daysWithDuration);
-    console.log(worker);
+
     Object.keys(this.daysWithDuration).forEach(key => console.log(key));
     // Object.keys(this.daysWithDuration[worker]).forEach(val => {
 
@@ -228,6 +182,35 @@ export class MakeAppointmentComponent implements OnInit {
     return minDate != '9999.2019.2019' ? minDate : '';
 }
 
+private fetchSlotsForEachWorker(duration, worker, index){
+  let slotsAvailable = [];
+
+  this.afStore.collection('workers').doc(worker).collection('schedule').doc(this.queryData).get().subscribe((data:any) => {
+    data = data.data();
+    if(data){
+
+        for(let interval of data.schedule){
+          let intervalMini = interval.split('^');
+          for(let start = Math.floor(this.transformTimeToMinutes(+intervalMini[0]));start<=Math.floor(this.transformTimeToMinutes(+intervalMini[1]) - duration);start+=this.salonInfo.stepForAppointments){
+            let minutes = start - (Math.floor(start/60) * 60);
+            let hours = Math.floor(start/60);
+            let slotTobe = hours + ':';
+            if(hours < 10)slotTobe = '0' + slotTobe;
+            if(minutes == 0)slotTobe+='00';
+            else slotTobe+=minutes;
+            slotsAvailable.push(slotTobe);
+            
+          }
+        }
+  }
+  this.mergedServicesByStylist[index].slotsAvailable = new Array();
+  for(let slot of slotsAvailable)this.mergedServicesByStylist[index].slotsAvailable.push(slot);
+  this.slotsConsecutive = [];
+  this.slotsNotConsecutive = [];
+  this.bkt(0);
+});
+}
+
   public async addService(){
     const modal = await this.modalController.create({
       component: AddServicePage,
@@ -236,7 +219,158 @@ export class MakeAppointmentComponent implements OnInit {
         'servicesUsed':this.servicesUsed
       }
     });
-    return await modal.present();
+    await modal.present();    
+    const { data } = await modal.onWillDismiss();
+    if(data.dismissed == false){
+      let obiect = {
+        serviceName:data.serviceChoosen,
+        stylistSelected:data.stylistSelected,
+        optionsSelected:data.optionsSelected,
+        duration:this.salonInfo.servicesSoloInfo[data.serviceChoosen].duration,
+        price:this.salonInfo.servicesSoloInfo[data.serviceChoosen].price
+      };
+      if(data.optionsSelected)for(let option of data.optionsSelected){
+        obiect.duration+=option.duration;
+        obiect.price+=option.price;
+      }
+
+      this.totalMoney+=obiect.price;
+      this.totalDuration+=obiect.duration;
+
+      this.servicesUsed.push(obiect);
+      if(this.servicesUsed.length == 1){
+        this.mergedServicesByStylist.push(
+          {
+            services: new Array(obiect),
+            slotsAvailable: [1, 2],
+            duration:0
+          });
+      }
+      else if(data.stylistSelected == this.servicesUsed[this.servicesUsed.length - 2].stylistSelected){
+        this.mergedServicesByStylist[this.mergedServicesByStylist.length - 1].services.push(obiect);
+      }
+        else this.mergedServicesByStylist.push(
+          {
+            services: new Array(obiect),
+            slotsAvailable: [1, 2],
+            duration:0
+          });
+
+      let stylist = data.stylistSelected;
+
+      let stylistChange = false;
+      let totalDuration:number = 0;
+      for(let service of this.servicesUsed){
+        if(service.stylistSelected != stylist)stylistChange = true;
+        totalDuration+=service.duration;
+      }
+      if(stylistChange == false){
+        this.justOneStylist = true;
+        this.fetchSlots(totalDuration);
+      }
+      else this.justOneStylist = false;
+      
+    }
+
+    this.updateMergedSlots();
+    
+
+  }
+
+  deleteService(service):void{
+    let index = this.servicesUsed.findIndex(x => x == service);
+    this.totalMoney-=this.servicesUsed[index].price;
+    this.totalDuration-=this.servicesUsed[index].duration;
+    let newMergedArray = this.mergedServicesByStylist.map(x => {
+      let newArray = new Array();
+      for(let serviceSmt of x.services){
+
+        if(serviceSmt.serviceName != service.serviceName)newArray.push(serviceSmt);
+      }
+      return {
+        ...x,
+        services: newArray
+      }
+    });
+
+    newMergedArray = newMergedArray.filter(x => x.services.length != 0);
+    this.mergedServicesByStylist = newMergedArray;
+    this.updateMergedSlots();
+    this.servicesUsed.splice(index, 1);
+
+  }
+
+  toggleReorder() {
+    const reorderGroup:any = document.getElementById('reorder');
+    reorderGroup.disabled = !reorderGroup.disabled;
+    reorderGroup.addEventListener('ionItemReorder', ({detail}) => {
+      detail.complete(true);
+    });
+  }
+
+  updateMergedSlots(){
+    for(let index in this.mergedServicesByStylist){
+      let duration = 0;
+      for(let service of this.mergedServicesByStylist[index].services)duration+=service.duration;
+      this.mergedServicesByStylist[index].duration = duration;
+      this.fetchSlotsForEachWorker(duration, this.mergedServicesByStylist[index].services[0].stylistSelected, index);
+    }
+  }
+
+  refreshSlotsFromMergedServices(){
+    for(let mergedService of this.mergedServicesByStylist){
+      
+    }
+  }
+
+  private bkt(k){
+    for(let slot of this.mergedServicesByStylist[k].slotsAvailable){
+      this.slotsBKT[k] =  slot; 
+
+      if((k == this.mergedServicesByStylist.length - 1) && this.solutie(k)){
+        this.adaugare(k);
+      }
+      else if(k < this.mergedServicesByStylist.length - 1)this.bkt(k+1);
+    } 
+
+  }
+
+  private solutie(k):boolean{
+
+    if(k != this.mergedServicesByStylist.length - 1)return false;
+
+    let lastEnd = Math.floor(this.transformTimeToMinutes(+(this.slotsBKT[0].replace(':', '.'))) + this.mergedServicesByStylist[0].duration);
+    for(let start = 1;start <= k;++start){
+
+      let minutes = Math.floor(this.transformTimeToMinutes(+(this.slotsBKT[start].replace(':', '.'))));
+
+      if(lastEnd <= minutes && (minutes - lastEnd) <= 30){
+        let difference = (minutes - lastEnd);
+        lastEnd = minutes + this.mergedServicesByStylist[start].duration;
+      }
+      else return false;
+    }
+    return true;
+  }
+
+  private adaugare(k){
+    let str = '';
+    let isConsecutive = true;
+    let lastEnd = Math.floor(this.transformTimeToMinutes(+(this.slotsBKT[0].replace(':', '.'))) + this.mergedServicesByStylist[0].duration); 
+    for(let i  = 1;i<=k;++i){
+      let minutes = Math.floor(this.transformTimeToMinutes(+(this.slotsBKT[i].replace(':', '.'))));
+      if(lastEnd != minutes)isConsecutive = false;
+      lastEnd = minutes + this.mergedServicesByStylist[i].duration;
+    }
+    
+    let toBePushed = new Array<string>();
+    for(let i  = 0;i<=k;++i)toBePushed.push(this.slotsBKT[i]);
+
+    if(isConsecutive)this.slotsConsecutive.push(toBePushed);
+    else this.slotsNotConsecutive.push(toBePushed);
+
+    console.log(toBePushed + ' ' + isConsecutive);
+  
   }
   
 

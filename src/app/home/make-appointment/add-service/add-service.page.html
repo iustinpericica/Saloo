@@ -13,7 +13,7 @@
   <ion-item>
     <ion-label>Alege un serviciu</ion-label>
     <ion-select okText="Ok" cancelText="Anulează" [(ngModel)] = "serviceChoosen" (ionChange) = "test()">
-      <ion-select-option *ngFor = "let service of servicesThatCanBeUsed" [value]="service">{{service}}</ion-select-option>
+      <ion-select-option *ngFor = "let service of servicesThatCanBeUsed" [value]="service">{{service}} - {{salonInfo.servicesSoloInfo[service].duration}} min, RON {{salonInfo.servicesSoloInfo[service].price}}</ion-select-option>
     </ion-select>
   </ion-item>
 
@@ -24,14 +24,71 @@
         <ion-select-option *ngFor = "let worker of salonInfo.servicesSoloInfo[serviceChoosen].workers" [value]="worker">{{worker}}</ion-select-option>
       </ion-select>
   </ion-item>
-<!-- 
-  <ion-item *ngIf = "serviceChoosen">
-      <ion-label>Alege Optiuni</ion-label>
-      <ion-select okText="Ok" cancelText="Anulează" [(ngModel)] = "stylistSelected">
-        <ion-select-option *ngFor = "let service of salonInfo.servicesSoloInfo[serviceChoosen]" value="service">{{service}}</ion-select-option>
-      </ion-select>
-  </ion-item> -->
+
+  <ion-item *ngIf = "serviceChoosen &&  salonInfo.servicesSoloInfo[serviceChoosen].options">
+    
+    <ion-label>Adaugă optiuni</ion-label>
+    <ion-select okText="Ok" cancelText="Anulează" [(ngModel)] = "optionsSelected" multiple>
+      <ion-select-option *ngFor = "let option of salonInfo.servicesSoloInfo[serviceChoosen].options" [value]="option">{{option.optionName}} - {{option.duration}} min, RON {{option.price}}</ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <ion-item *ngIf = "serviceChoosen && stylistSelected">
+    
+    <ion-button (click) = "selectsService()">Adaugă</ion-button>  
+
+  </ion-item>
 
 
 
-</ion-content>
+</ion-content> 
+
+
+<!-- <ion-content fullscreen padding scroll-y="false">
+
+    <ion-fab vertical="top" horizontal="start" slot="fixed">
+        <ion-fab-button (click)="dismissModal()">
+          <ion-icon name="arrow-dropright"></ion-icon>
+        </ion-fab-button>
+    </ion-fab>
+
+  <ion-slides pager="true" [options]="slideOpts">
+
+    <ion-slide>
+
+      <ion-item>
+        <ion-label>Alege un serviciu</ion-label>
+        <ion-select okText="Ok" cancelText="Anulează" [(ngModel)] = "serviceChoosen" (ionChange) = "test()">
+          <ion-select-option *ngFor = "let service of servicesThatCanBeUsed" [value]="service">{{service}}</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+
+      </div>
+
+    </ion-slide>
+
+    <ion-slide>
+      <ion-item *ngIf = "serviceChoosen">
+    
+        <ion-label>Alege un stilist</ion-label>
+        <ion-select okText="Ok" cancelText="Anulează" [(ngModel)] = "stylistSelected">
+          <ion-select-option *ngFor = "let worker of salonInfo.servicesSoloInfo[serviceChoosen].workers" [value]="worker">{{worker}}</ion-select-option>
+        </ion-select>
+    </ion-item>
+    </ion-slide>
+
+    <ion-slide>
+
+      <ion-item *ngIf = "serviceChoosen &&  salonInfo.servicesSoloInfo[serviceChoosen].options">
+    
+        <ion-label>Adaugă optiuni</ion-label>
+        <ion-select okText="Ok" cancelText="Anulează" [(ngModel)] = "optionsSelected" multiple>
+          <ion-select-option *ngFor = "let option of salonInfo.servicesSoloInfo[serviceChoosen].options" [value]="option.optionName">{{option.optionName}}</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+    </ion-slide>
+  </ion-slides>
+
+</ion-content> -->
